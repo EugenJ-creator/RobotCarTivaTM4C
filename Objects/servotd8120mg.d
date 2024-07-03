@@ -1,0 +1,10 @@
+.\objects\servotd8120mg.o: ServoTD8120MG.c
+.\objects\servotd8120mg.o: ../inc/tm4c123gh6pm.h
+.\objects\servotd8120mg.o: ServoTD8120MG.h
+.\objects\servotd8120mg.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\servotd8120mg.o: PWM.h
+.\objects\servotd8120mg.o: os.h
+.\objects\servotd8120mg.o: ../inc/Profile.h
+.\objects\servotd8120mg.o: Texas.h
+.\objects\servotd8120mg.o: ../inc/CortexM.h
+.\objects\servotd8120mg.o: Math.h
