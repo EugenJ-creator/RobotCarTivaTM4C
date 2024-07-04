@@ -191,7 +191,7 @@ void Task1(void){
 		OS_Wait(&NewBluetoothAngleData); // New wheels position is ready
 		servoupdownarm(AngleWheels, 0); // 0..160
 		if (SpeedWheels==0){
-			OS_Signal(&AnglePositionChanged);
+			OS_Signal(&AnglePositionChanged);  // Signal that Wheel position was changed
 		}
 //		servoupdownarm(140, 0);
 
@@ -229,7 +229,7 @@ void Task3(void){
 
 		while(1){
 			OS_Wait(&AnglePositionChanged);
-			OS_Sleep(3000);     // waits about 3 sec
+			OS_Sleep(3000);     // waits about 3 sec after what wheel position was changed
 			if (SpeedWheels==0){  // If still speed of wheels is Null, disconnect PWM for stearing
 				PWM1_1_A_disable();
 			}
