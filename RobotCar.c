@@ -54,6 +54,7 @@
 #include "AP_Services.h"
 #include "PLL.h"
 #include "GPIO.h"
+#include "Buzzer.h"
 
 #define THREADFREQ 1000   // frequency in Hz of round robin scheduler
 
@@ -80,18 +81,19 @@ enum plotstate{
 };
 enum plotstate PlotState = Accelerometer;
 
-// Motor Global parameters
+//  Global parameters
 uint32_t SpeedWheels;    // 0...255
 uint32_t DirectionWheels = 0;    // 0-Forward/1-back
 uint32_t AngleWheels;    // 0...180
 //uint32_t SpeedAngleWheels;    // 0..9 Sensitivity
-
+uint32_t BuzzerVolume;  // 0...1600
 
 // semaphores
 int32_t NewBluetoothDirectionData;  // true when new Speed Value comes from Bluetooth Client
 int32_t NewBluetoothSpeedData;  // true when new Speed Value comes from Bluetooth Client
 int32_t NewBluetoothAngleData;  // true when new Angle Value comes from Bluetooth Client
 int32_t AnglePositionChanged; 	// true after triggering new angle position
+int32_t NewBluetoothBuzzerData; // true when new Buzzer volume comes from Bluetooth Client
 
 int32_t TakeJoystickData; // binary semaphore
 
@@ -246,7 +248,13 @@ void Task3(void){
 void Task4(void){
 
   while(1){
-		//int i= 1;
+		OS_Wait(&NewBluetoothBuzzerData); // New Buzzer Volume are ready
+		if (BuzzerVolume!=0){
+			BuzzerOn(BuzzerVolume);
+		} else {
+			BuzzerOff();
+		}
+		
 //		WaitForInterrupt();
   }
 }
@@ -408,15 +416,40 @@ void Bluetooth_Write_Wheel_Direction_Value(){
 	}
 }
 
+//------------LaunchPad__Output------------
+// Set new value of Motor Speed from bluetooth client to launchpad
+// Data from UART are Little Endian
+// Input: 
+// Output: none
+void Bluetooth_Write_Buzzer_Value(){  // write angle
+
+//	uint32_t Speed=0;
+//	
+//	for (int i=0;i<4;i++){
+//		Speed= Speed<<8;
+//		Speed|= CharacteristicList[5].pt[i];
+//	}
+//	SpeedWheels = Speed;
+	
+	BuzzerVolume = CharacteristicList[3].pt[0];
+  OS_Signal(&NewBluetoothBuzzerData);  // Set Semaphore NewSpeedData
+
+}
+
+
+
+
+
 
 extern uint16_t edXNum; // actual variable within TExaS
 void Bluetooth_Init(void){volatile int r;
+	
   //EnableInterrupts();
   UART0_OutString("\n\rLab 6 Application Processor\n\r");
   r = AP_Init(); 
   GetStatus();  // optional
   GetVersion(); // optional
-  AddService(0xFFF0); 
+  AddService(0xFFE0); 
 	//AddCharacteristic(0xFFF1,1,&PlotState,0x03,0x0A,"Data0",&Bluetooth_ReadPlotState,&Bluetooth_WritePlotState);     ///Test 
   //AddCharacteristic(0xFFF1,1,&PlotState,0x03,0x0A,"PlotState",&Bluetooth_ReadPlotState,&Bluetooth_WritePlotState);
 	
@@ -424,11 +457,11 @@ void Bluetooth_Init(void){volatile int r;
 //  AddCharacteristic(0xFFF3,4,&SoundRMS,0x01,0x02,"Sound",&Bluetooth_ReadSound,0);
 //  AddCharacteristic(0xFFF4,1,&TemperatureByteData,0x01,0x02,"Temperature",&Bluetooth_ReadTemperature,0);
 //  AddCharacteristic(0xFFF5,4,&LightData,0x01,0x02,"Light",&Bluetooth_ReadLight,0);
-//	
-	AddCharacteristic(0xFFF5,1,&DirectionWheels,0x03,0x0A,"Direction",0,&Bluetooth_Write_Wheel_Direction_Value);   //  write current direction value, 1 byte
-	AddCharacteristic(0xFFF6,1,&AngleWheels,0x03,0x0A,"Angle",0,&Bluetooth_Write_Stear_Angle_Value);   //  write current Angle value, 1 byte
-	AddCharacteristic(0xFFF7,1,&SpeedWheels,0x03,0x0A,"Speed",0,&Bluetooth_Write_Speed_Motor_Value);   //  write current Speed value, 1 bytes
 	
+	AddCharacteristic(0xFFE1,1,&DirectionWheels,0x03,0x0A,"Direction",0,&Bluetooth_Write_Wheel_Direction_Value);   //  write current direction value, 1 byte
+	AddCharacteristic(0xFFE2,1,&AngleWheels,0x03,0x0A,"Angle",0,&Bluetooth_Write_Stear_Angle_Value);   //  write current Angle value, 1 byte
+	AddCharacteristic(0xFFE3,1,&SpeedWheels,0x03,0x0A,"Speed",0,&Bluetooth_Write_Speed_Motor_Value);   //  write current Speed value, 1 bytes
+	AddCharacteristic(0xFFE4,1,&BuzzerVolume,0x03,0x0A,"Buzzer",0,&Bluetooth_Write_Buzzer_Value);   //  write current Speed value, 1 bytes
 	
 	//AddCharacteristic(0xFFF6,1,&PlotState,0x03,0x0A,"PlotState",&Bluetooth_ReadPlotState,&Bluetooth_WritePlotState);   //  write current speed value
 	//AddCharacteristic(0xFFF6,1,&PlotState,0x03,0x0A,"PlotState",&Bluetooth_ReadPlotState,&Bluetooth_WritePlotState);   //  write current Angle value
@@ -438,8 +471,8 @@ void Bluetooth_Init(void){volatile int r;
 	
 	
 	
-	//AddNotifyCharacteristic(0xFFF8,2,&Steps,"Number of Steps",&Bluetooth_Steps);
-	AddNotifyCharacteristic(0xFFF8,2,&Steps,"count",&Bluetooth_Steps);
+	//AddNotifyCharacteristic(0xFFF9,2,&Steps,"Number of Steps",&Bluetooth_Steps);
+	AddNotifyCharacteristic(0xFFF6,2,&Steps,"count",&Bluetooth_Steps);
   RegisterService();
   StartAdvertisement();
   GetStatus();
@@ -460,7 +493,7 @@ int main(void){
   OS_InitSemaphore(&NewBluetoothSpeedData, 0);  // 0 means no data
 	OS_InitSemaphore(&NewBluetoothAngleData, 0);  // 0 means no data
 	OS_InitSemaphore(&AnglePositionChanged, 0);  // 0 means no data
-
+	OS_InitSemaphore(&NewBluetoothBuzzerData, 0);  // 0 means no data
 	//OS_InitSemaphore(&NewBluetoothDirectionData, 0);  // 0 means no data
 	
 	// Task 0 should run every 5000ms
@@ -469,15 +502,19 @@ int main(void){
   OS_AddThreads(&Task0,0, &Task1,0, &Task2,0, &Task3,0, &Task4,0, &Task5,0, &Task6,0, &Task7,0, &Task8,0, &Task9,0);
 
 	//BSP_Joystick_Init();
+	
 	// Input:  Period(Takts), DutyCicle(Takts)
 	// initialize PWM1_1A, 5 Takt in 1 mikros * 2500 mikros , Servo steering  
 	PWM1_1_A_Init((5*PERIOD_SERVO), (5*POSITION_NULL));   // PA6       
 	
 	
 	// Input:  Period(Takts), DutyCicle(Takts)
-	// initialize PWM0_3A, 1 KHz Period, DC Motor Control 
+	// initialize PWM0_3A, 20 KHz Period, DC Motor Control, 5 Takt in 1 mikros * 250 mikros = 20kHZ, Servo steering  
 	PWM0_3_A_Init(PERIOD_DC, SPEED_NULL);       // PD0    
 	
+	// Input:  Period(Takts), DutyCicle(Takts)
+	// initialize PWM0_0A, 3 KHz Period, Buzzer , 50% volume
+	PWM0_0_B_Init(PERIOD_BUZZER, VOLUME_50);
 	
 	
 	UART0_Init();     //  will affect PWM0_0_A

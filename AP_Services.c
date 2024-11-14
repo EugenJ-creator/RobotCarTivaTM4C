@@ -563,13 +563,13 @@ void BuildStartAdvertisementMsg(uint16_t interval, uint8_t *msg){
 //         APFAIL if notification not configured, or if SNP failure
 int StartAdvertisement(void){volatile int r; uint8_t sendMsg[40];
   OutString("\n\rSet Device name");
-  BuildSetDeviceNameMsg("Shape the World",sendMsg);
+  BuildSetDeviceNameMsg("Shape the World2",sendMsg);
   r =AP_SendMessageResponse(sendMsg,RecvBuf,RECVSIZE);
   OutString("\n\rSetAdvertisement1");
   BuildSetAdvertisementData1Msg(sendMsg);
   r =AP_SendMessageResponse(sendMsg,RecvBuf,RECVSIZE);
   OutString("\n\rSetAdvertisement Data");
-  BuildSetAdvertisementDataMsg("Shape the World",sendMsg);
+  BuildSetAdvertisementDataMsg("Shape the World2",sendMsg);
   r =AP_SendMessageResponse(sendMsg,RecvBuf,RECVSIZE);
   OutString("\n\rStartAdvertisement");
   BuildStartAdvertisementMsg(100,sendMsg);

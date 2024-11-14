@@ -26,7 +26,7 @@
 
 
 
-
+//---------------BSP-  Buzzer  TCC Init Pins 
 // period is 16-bit number of PWM clock cycles in one period (3<=period)
 // period for PB6 and PB7 must be the same
 // duty is number of PWM clock cycles output is high  (2<=duty<=period-1)
@@ -46,7 +46,7 @@ void PWM0_0_B_Init(uint16_t period, uint16_t duty){
   GPIO_PORTB_DEN_R |= 0x80;             // enable digital I/O on PB7
   SYSCTL_RCC_R |= SYSCTL_RCC_USEPWMDIV; // 3) use PWM divider
   SYSCTL_RCC_R &= ~SYSCTL_RCC_PWMDIV_M; //    clear PWM divider field
-  SYSCTL_RCC_R += SYSCTL_RCC_PWMDIV_16;  //    configure for /2 divider
+  SYSCTL_RCC_R += SYSCTL_RCC_PWMDIV_16;  //    configure for /16 divider
   PWM0_0_CTL_R = 0;                     // 4) re-loading down-counting mode
   PWM0_0_GENB_R = (PWM_0_GENB_ACTCMPBD_ONE|PWM_0_GENB_ACTLOAD_ZERO);
   // PB7 goes low on LOAD
@@ -81,7 +81,7 @@ void PWM0_0_B_Deactivate(void){
 
 
 //------------------------------------------------------------------------------------------------------------------------------------
-//---------------BSP-  DC Motor Speed TCC Init Pins 
+//---------------BSP-  Stearing with Servo TC8120MG TCC Init Pins 
 // period is 16-bit number of PWM clock cycles in one period (3<=period)
 // duty is number of PWM clock cycles output is high  (2<=duty<=period-1)
 // PWM clock rate = processor clock rate/SYSCTL_RCC_PWMDIV

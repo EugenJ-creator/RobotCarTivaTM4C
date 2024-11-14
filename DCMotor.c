@@ -7,11 +7,9 @@
 #include "GPIO.h"
 
 // ------------Control the Period of PWM for DC Motor------------
-// Joystick is not stable, so there is a small offset. 
-// Position Zero is between 0 and 200
-// Input: speed is an integer , that indikates how many takts has duty cycle (max 2500 = 1 msec = 1 KHz, 1 mikrosec = 2,5 Takts )
-// Output: Void
 
+// Output: Void
+// Input: speed 5 Takt in 1 mikros * 250 mikros = 20kHZ, Servo steering 
 
 void DCforward(uint32_t speed , uint32_t direction){
 	
@@ -35,10 +33,9 @@ void DCforward(uint32_t speed , uint32_t direction){
 	
 }	
 // ------------Control the Period of PWM for DC Motor------------
-// Joystick is not stable, so there is a small offset. 
-// Position Zero is between 0 and 200
-// Input: speed is an integer , that indikates how many takts has duty cycle (max 2500 = 1 msec = 1 KHz, 1 mikrosec = 2,5 Takts )
+// 
 // Output: Void	
+// Input: speed 5 Takt in 1 mikros * 250 mikros = 20kHZ, Servo steering 
 void DCbackward(uint32_t speed , uint32_t direction){
 
 if (speed == 0) {

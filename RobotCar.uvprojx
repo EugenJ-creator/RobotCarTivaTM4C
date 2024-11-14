@@ -516,6 +516,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>ActorDriver</GroupName>
+          <Files>
+            <File>
+              <FileName>Buzzer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Buzzer.c</FilePath>
+            </File>
+            <File>
+              <FileName>Buzzer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Buzzer.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
         <Group>
