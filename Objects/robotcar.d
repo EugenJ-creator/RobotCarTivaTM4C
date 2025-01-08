@@ -20,3 +20,8 @@
 .\objects\robotcar.o: ../inc/GPIO.h
 .\objects\robotcar.o: Buzzer.h
 .\objects\robotcar.o: PWM.h
+.\objects\robotcar.o: I2C3.h
+.\objects\robotcar.o: I2C1.h
+.\objects\robotcar.o: TempHumidity.h
+.\objects\robotcar.o: I2C3.h
+.\objects\robotcar.o: GyroAccelMag.h

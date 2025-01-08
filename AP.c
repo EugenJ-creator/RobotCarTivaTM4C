@@ -194,13 +194,13 @@ uint8_t NPI_CCCDUpdatedConfirmation[] = {
   0x00,0x00,      // handle of connection always 0
   0xDD};          // FCS (calculated by AP_SendMessageResponse)
 uint8_t NPI_SendNotificationIndication[] = {   
-  SOF,0x07,0x00,  // length = 7 to 14 depending on data size
+  SOF,0x0C,0x00,  // length = 7 to 14 depending on data size
   0x55,0x89,      // SNP Send Notification Indication (0x89))
   0x00,0x00,      // handle of connection always 0
   0x00,0x00,      // Handle of the characteristic value attribute to notify / indicate (filled in dynamically
   0x00,           // RFU
   0x01,           // Indication Request type
-  0x00,0,0,0,0,0,0,0, // 1 to 8 bytes of data filled in dynamically
+  0x00,0,0,0,0,0, // 1 to 8 bytes of data filled in dynamically
   0xDD};      // FCS (calculated by AP_SendMessageResponse)
 
 uint8_t NPI_AddCharValue[] = {   
@@ -674,7 +674,7 @@ int AP_SendNotification(uint32_t i){ uint16_t handle; uint32_t j;uint8_t thedata
     s = NotifyCharacteristicList[i].size;
     for(j=0; j<s; j++){
       thedata = NotifyCharacteristicList[i].pt[s-j-1]; // fetch data from user little endian to SNP big endian
-      OutUHex(thedata); OutString(", ");      
+      OutUHex(thedata); OutString(", ");  
       NPI_SendNotificationIndication[11+j] = thedata;    // copy into message, big endian
     }
     NPI_SendNotificationIndication[7] = handle&0x0FF; // handle
@@ -685,6 +685,9 @@ int AP_SendNotification(uint32_t i){ uint16_t handle; uint32_t j;uint8_t thedata
   }
   return r1; // OK or fail depending on SendNotificationIndication
 }
+
+
+
 //*************AP_StartAdvertisement**************
 // Start advertisement
 // Input:  none

@@ -427,6 +427,7 @@ void RealTimeEvents(void){int flag=0;
 //          period in ms
 // priority level at 0 (highest
 // Outputs: none
+// For first time period
 void OS_PeriodTrigger0_Init(int32_t *semaPt, uint32_t period){
 	PeriodicSemaphore0 = semaPt;
 	Period0 = period;
@@ -438,6 +439,7 @@ void OS_PeriodTrigger0_Init(int32_t *semaPt, uint32_t period){
 //          period in ms
 // priority level at 0 (highest
 // Outputs: none
+// For second time period
 void OS_PeriodTrigger1_Init(int32_t *semaPt, uint32_t period){
 	PeriodicSemaphore1 = semaPt;
 	Period1 = period;

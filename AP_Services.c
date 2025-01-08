@@ -319,7 +319,29 @@ void BuildAddNotifyCharDescriptorMsg(char name[], uint8_t *msg){
 // for a hint see second half of AP_AddNotifyCharacteristic
 //****You implement this function as part of Lab 6*****
   
-	int i=0;
+//	int i=0;
+//	
+//	msg[0] = SOF;       // 
+//  msg[2] = 0x00;      // Length Farme
+//  msg[1] = 0x0C;      // frame length without sero
+//  msg[3] = 0x55;      // SNP Send Notification Indication (0x89))
+//  msg[4] = 0x89;			// SNP Send Notification Indication (0x89))
+//  msg[5] = 0x00;      // handle of connection always 0
+//  msg[6] = 0x00;      // handle of connection always 0
+//  msg[7] = 0x00;      // Handle of the characteristic value attribute to notify / indicate (filled in dynamically
+//	msg[8] = 0x00;      // Handle of the characteristic value attribute to notify / indicate (filled in dynamically
+//	msg[9] = 0x00;      // RFU
+//	msg[10] = 0x01;     // Indication Request type   // Notifucation Req is 1
+//  msg[11] = 0x00;   	// 1 to 8 bytes of data filled in dynamically
+//	msg[12] = 0x00; 		// 1 to 8 bytes of data filled in dynamically
+//	msg[13] = 0x00;     // 1 to 8 bytes of data filled in dynamically
+//	msg[14] = 0x00;     // 1 to 8 bytes of data filled in dynamically 
+//	msg[15] = 0x00;     // 1 to 8 bytes of data filled in dynamically
+//	msg[16] = 0x00;     // 1 to 8 bytes of data filled in dynamically
+//	SetFCS(msg);			// FCS 
+	
+ 
+int i=0;
 	
 	msg[0] = SOF;       // 
   msg[2] = 0x00;       // Length Farme
@@ -338,9 +360,6 @@ void BuildAddNotifyCharDescriptorMsg(char name[], uint8_t *msg){
   msg[8] = msg[10] = i; // string length
   msg[9] = msg[11] = 0; // string length
 	SetFCS(msg);			// FCS 
-	
- 
-
 	
 	
 	
@@ -395,7 +414,7 @@ int AddNotifyCharacteristic(uint16_t uuid, uint16_t thesize, void *pt,
   NotifyCharacteristicList[NotifyCharacteristicCount].uuid = uuid;
   NotifyCharacteristicList[NotifyCharacteristicCount].theHandle = handle;
   NotifyCharacteristicList[NotifyCharacteristicCount].CCCDhandle = (RecvBuf[8]<<8)+RecvBuf[7]; // handle for this CCCD
-  NotifyCharacteristicList[NotifyCharacteristicCount].CCCDvalue = 0; // notify initially off
+  NotifyCharacteristicList[NotifyCharacteristicCount].CCCDvalue = 0; // By defoult is 0. Will be channged dinamically if user will activate CCCD
   NotifyCharacteristicList[NotifyCharacteristicCount].size = thesize;
   NotifyCharacteristicList[NotifyCharacteristicCount].pt = (uint8_t *) pt;
   NotifyCharacteristicList[NotifyCharacteristicCount].callBackCCCD = CCCDfunc;

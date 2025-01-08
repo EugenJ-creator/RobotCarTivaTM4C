@@ -55,6 +55,11 @@
 #include "PLL.h"
 #include "GPIO.h"
 #include "Buzzer.h"
+#include "I2C3.h"
+#include "I2C1.h"
+#include "TempHumidity.h"
+#include "GyroAccelMag.h"
+
 
 #define THREADFREQ 1000   // frequency in Hz of round robin scheduler
 
@@ -73,13 +78,8 @@ uint32_t LightData;           // 100 lux
 int32_t  TemperatureData;     // 0.1C
 uint8_t  TemperatureByteData; // 1C
 
-enum plotstate{
-  Accelerometer,
-  Microphone,
-  Temperature,
-  Light
-};
-enum plotstate PlotState = Accelerometer;
+
+
 
 //  Global parameters
 uint32_t SpeedWheels;    // 0...255
@@ -87,6 +87,10 @@ uint32_t DirectionWheels = 0;    // 0-Forward/1-back
 uint32_t AngleWheels;    // 0...180
 //uint32_t SpeedAngleWheels;    // 0..9 Sensitivity
 uint32_t BuzzerVolume;  // 0...1600
+uint8_t tempHumidityData[6];  // Data Array for bluetooth notification
+float magnetometerData[3];  // x, y, z   big indian
+
+
 
 // semaphores
 int32_t NewBluetoothDirectionData;  // true when new Speed Value comes from Bluetooth Client
@@ -94,8 +98,13 @@ int32_t NewBluetoothSpeedData;  // true when new Speed Value comes from Bluetoot
 int32_t NewBluetoothAngleData;  // true when new Angle Value comes from Bluetooth Client
 int32_t AnglePositionChanged; 	// true after triggering new angle position
 int32_t NewBluetoothBuzzerData; // true when new Buzzer volume comes from Bluetooth Client
+int32_t NewTempHumidityData; 		// true when new Temp&Humidity Sensor data are ready
 
-int32_t TakeJoystickData; // binary semaphore
+
+uint8_t SendTempHumidityFlag=0;
+
+
+uint8_t TakeJoystickData; // binary semaphore
 
 
 
@@ -151,31 +160,20 @@ void Task0(void){
 	Count0 = 0;
   while(1){
     Count0++;
-			AP_BackgroundProcess();
+		AP_BackgroundProcess();
 		
-// Send notification with index null
 		
-//    if(Send0Flag){
-//      AP_SendNotification(0);
-//      Send0Flag=0;
-//    }
-    //WaitForInterrupt();
+		if (SendTempHumidityFlag){
+			if (AP_SendNotification(0)){   // Send data for 0 Characteristic , Temp&Humidity
+				SendTempHumidityFlag = 0;
+			}
+		}
+
 	}
 }
 /* ****************************************** */
 /*          End of Task0 Section              */
 /* ****************************************** */
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -203,7 +201,7 @@ void Task1(void){
 
 
 // Main thread scheduled by OS round robin preemptive scheduler
-// Task2 does nothing but never blocks or sleeps
+// Task2 Controls speed of motor
 // Inputs:  none
 // Outputs: none
 void Task2(void){
@@ -224,7 +222,7 @@ void Task2(void){
 }
 
 // Main thread scheduled by OS round robin preemptive scheduler
-// Task2 does nothing but never blocks or sleeps
+// Task2 Disconnect PWM for wheels if no action for 3 seconds
 // Inputs:  none
 // Outputs: none
 void Task3(void){
@@ -242,7 +240,7 @@ void Task3(void){
 
 
 // Main thread scheduled by OS round robin preemptive scheduler
-// Task2 does nothing but never blocks or sleeps
+// Task2 Controls Buzzer
 // Inputs:  none
 // Outputs: none
 void Task4(void){
@@ -260,16 +258,22 @@ void Task4(void){
 }
 
 // Main thread scheduled by OS round robin preemptive scheduler
-// Task2 does nothing but never blocks or sleeps
+// Task2 Send Temp and Humidity sensor data
 // Inputs:  none
 // Outputs: none
 void Task5(void){
 
-  while(1){
-		//int i= 1;
-//		WaitForInterrupt();
-  }
-}
+
+		while(1){
+			//OS_Wait(&NewBluetoothBuzzerData); // Waint intil sensor data are ready
+			TempHumiditySensor_Start();
+			OS_Sleep(250);     // waits about 250 msec	
+			TempHumiditySensor_End(tempHumidityData);
+			SendTempHumidityFlag = 1;
+			//OS_Signal(&NewTempHumidityData);  // Signal that Temp&Humidity sensor data are ready 
+			OS_Sleep(1000);     // waits about 1 sec for new measurement
+		}
+	}
 
 // Main thread scheduled by OS round robin preemptive scheduler
 // Task2 does nothing but never blocks or sleeps
@@ -278,9 +282,16 @@ void Task5(void){
 void Task6(void){
 
   while(1){
-		//int i= 1;
+
+		// Send notification with index null
+		ReadMagnetometerData(magnetometerData);
+		OS_Sleep(50);     // waits about 1 sec	
+		
+	}
+	
+		
 //		WaitForInterrupt();
-  }
+
 }
 
 // Main thread scheduled by OS round robin preemptive scheduler
@@ -290,7 +301,7 @@ void Task6(void){
 void Task7(void){
 
   while(1){
-		//int i= 1;
+
 //		WaitForInterrupt();
   }
 }
@@ -335,41 +346,7 @@ void Task10(void){
 
 
 
-// ********OutValue**********
-// Debugging dump of a data value to virtual serial port to PC
-// data shown as 1 to 8 hexadecimal characters
-// Inputs:  response (number returned by last AP call)
-// Outputs: none
-void OutValue(char *label,uint32_t value){ 
-  UART0_OutString(label);
-  UART0_OutUHex(value);
-}
-void Bluetooth_ReadTime(void){ // called on a SNP Characteristic Read Indication for characteristic Time
-  OutValue("\n\rRead Time=",Time);
-}
-void Bluetooth_ReadSound(void){ // called on a SNP Characteristic Read Indication for characteristic Sound
-  OutValue("\n\rRead Sound RMS=",SoundRMS);
-}
-void Bluetooth_ReadTemperature(void){ // called on a SNP Characteristic Read Indication for characteristic Temperature
-  TemperatureByteData = (TemperatureData+5)/10;
-  OutValue("\n\rRead Temperature=",TemperatureByteData);
-}
-void Bluetooth_ReadLight(void){ // called on a SNP Characteristic Read Indication for characteristic Light
-  OutValue("\n\rRead Light=",LightData);
-}
-void Bluetooth_ReadPlotState(void){ // called on a SNP Characteristic Read Indication for characteristic PlotState
-  OutValue("\n\rRead PlotState=",PlotState);
-}
-//void Bluetooth_WritePlotState(void){ // called on a SNP Characteristic Write Indication on characteristic  PlotState
-//  if(PlotState>3) PlotState=Accelerometer;  // make it 0,1,2,3
-//  OutValue("\n\rWrite PlotState=",PlotState);
-//  BSP_Buzzer_Set(512);           // beep until next call of task3
-//  ReDrawAxes = 1;                // redraw axes on next call of display task
-//}
-void Bluetooth_Steps(void){ // called on SNP CCCD Updated Indication
-  OutValue("\n\rCCCD=",AP_GetNotifyCCCD(0));
-	
-}
+
 
 
 //------------LaunchPad__Output------------
@@ -417,27 +394,30 @@ void Bluetooth_Write_Wheel_Direction_Value(){
 }
 
 //------------LaunchPad__Output------------
-// Set new value of Motor Speed from bluetooth client to launchpad
+// Set new value of Buzzer Valume from bluetooth client to launchpad
 // Data from UART are Little Endian
 // Input: 
 // Output: none
 void Bluetooth_Write_Buzzer_Value(){  // write angle
 
-//	uint32_t Speed=0;
-//	
-//	for (int i=0;i<4;i++){
-//		Speed= Speed<<8;
-//		Speed|= CharacteristicList[5].pt[i];
-//	}
-//	SpeedWheels = Speed;
 	
-	BuzzerVolume = CharacteristicList[3].pt[0];
+	BuzzerVolume = CharacteristicList[3].pt[0];   ///   Is not necessary
   OS_Signal(&NewBluetoothBuzzerData);  // Set Semaphore NewSpeedData
 
 }
 
 
+//------------LaunchPad__Output------------
+// Set new value of Temp&Humidity from bluetooth client to launchpad
+// Data from UART are Little Endian
+// Input: 
+// Output: none
+void Bluetooth_Write_TempHumidity_Value(){  // write temp , humidity
 
+	
+/// Thread will send periodically the notification if CCCD is activated	. No need
+
+}
 
 
 
@@ -450,29 +430,16 @@ void Bluetooth_Init(void){volatile int r;
   GetStatus();  // optional
   GetVersion(); // optional
   AddService(0xFFE0); 
-	//AddCharacteristic(0xFFF1,1,&PlotState,0x03,0x0A,"Data0",&Bluetooth_ReadPlotState,&Bluetooth_WritePlotState);     ///Test 
-  //AddCharacteristic(0xFFF1,1,&PlotState,0x03,0x0A,"PlotState",&Bluetooth_ReadPlotState,&Bluetooth_WritePlotState);
-	
-//  AddCharacteristic(0xFFF2,4,&Time,0x01,0x02,"Time",&Bluetooth_ReadTime,0);
-//  AddCharacteristic(0xFFF3,4,&SoundRMS,0x01,0x02,"Sound",&Bluetooth_ReadSound,0);
-//  AddCharacteristic(0xFFF4,1,&TemperatureByteData,0x01,0x02,"Temperature",&Bluetooth_ReadTemperature,0);
-//  AddCharacteristic(0xFFF5,4,&LightData,0x01,0x02,"Light",&Bluetooth_ReadLight,0);
 	
 	AddCharacteristic(0xFFE1,1,&DirectionWheels,0x03,0x0A,"Direction",0,&Bluetooth_Write_Wheel_Direction_Value);   //  write current direction value, 1 byte
 	AddCharacteristic(0xFFE2,1,&AngleWheels,0x03,0x0A,"Angle",0,&Bluetooth_Write_Stear_Angle_Value);   //  write current Angle value, 1 byte
 	AddCharacteristic(0xFFE3,1,&SpeedWheels,0x03,0x0A,"Speed",0,&Bluetooth_Write_Speed_Motor_Value);   //  write current Speed value, 1 bytes
 	AddCharacteristic(0xFFE4,1,&BuzzerVolume,0x03,0x0A,"Buzzer",0,&Bluetooth_Write_Buzzer_Value);   //  write current Speed value, 1 bytes
 	
-	//AddCharacteristic(0xFFF6,1,&PlotState,0x03,0x0A,"PlotState",&Bluetooth_ReadPlotState,&Bluetooth_WritePlotState);   //  write current speed value
-	//AddCharacteristic(0xFFF6,1,&PlotState,0x03,0x0A,"PlotState",&Bluetooth_ReadPlotState,&Bluetooth_WritePlotState);   //  write current Angle value
-	
-  //AddCharacteristic(0xFFF6,2,&edXNum,0x02,0x08,"edXNum",0,&TExaS_Grade);
-  
+
+	AddNotifyCharacteristic(0xFFE5,6,&tempHumidityData[0],"TempHumidity",&Bluetooth_Write_TempHumidity_Value);
 	
 	
-	
-	//AddNotifyCharacteristic(0xFFF9,2,&Steps,"Number of Steps",&Bluetooth_Steps);
-	AddNotifyCharacteristic(0xFFF6,2,&Steps,"count",&Bluetooth_Steps);
   RegisterService();
   StartAdvertisement();
   GetStatus();
@@ -483,8 +450,8 @@ void Bluetooth_Init(void){volatile int r;
 
 int main(void){
 	//PLL_Init();                      // bus clock at 80 MHz
-	
-	GPIO_DC_Init();	
+	// Port change
+	//GPIO_DC_Init();	//  initialize pins for forward and backward dierction
 	
   OS_Init();
   Profile_Init();  // initialize the 7 hardware profiling pins
@@ -494,10 +461,10 @@ int main(void){
 	OS_InitSemaphore(&NewBluetoothAngleData, 0);  // 0 means no data
 	OS_InitSemaphore(&AnglePositionChanged, 0);  // 0 means no data
 	OS_InitSemaphore(&NewBluetoothBuzzerData, 0);  // 0 means no data
-	//OS_InitSemaphore(&NewBluetoothDirectionData, 0);  // 0 means no data
+	OS_InitSemaphore(&NewTempHumidityData, 0);  // 0 means no data
 	
-	// Task 0 should run every 5000ms
-  //OS_AddPeriodicEventThread(&Task10, 1000);
+	// Task 6 should run every 1000ms
+  //OS_AddPeriodicEventThread(&Task6, 1000);  //  Measures acceleration ,   Only for prio 1 Events that should be quickly executed. Not thread!!. It is a Task event.
 	
   OS_AddThreads(&Task0,0, &Task1,0, &Task2,0, &Task3,0, &Task4,0, &Task5,0, &Task6,0, &Task7,0, &Task8,0, &Task9,0);
 
@@ -505,12 +472,13 @@ int main(void){
 	
 	// Input:  Period(Takts), DutyCicle(Takts)
 	// initialize PWM1_1A, 5 Takt in 1 mikros * 2500 mikros , Servo steering  
-	PWM1_1_A_Init((5*PERIOD_SERVO), (5*POSITION_NULL));   // PA6       
+	//   Port change
+	//PWM1_1_A_Init((5*PERIOD_SERVO), (5*POSITION_NULL));   // PA6       
 	
 	
 	// Input:  Period(Takts), DutyCicle(Takts)
 	// initialize PWM0_3A, 20 KHz Period, DC Motor Control, 5 Takt in 1 mikros * 250 mikros = 20kHZ, Servo steering  
-	PWM0_3_A_Init(PERIOD_DC, SPEED_NULL);       // PD0    
+	//PWM0_3_A_Init(PERIOD_DC, SPEED_NULL);       // PD0   Change to another PWM   
 	
 	// Input:  Period(Takts), DutyCicle(Takts)
 	// initialize PWM0_0A, 3 KHz Period, Buzzer , 50% volume
@@ -520,7 +488,14 @@ int main(void){
 	UART0_Init();     //  will affect PWM0_0_A
 	Bluetooth_Init();
 	
-	OS_PeriodTrigger0_Init(&TakeJoystickData,5000);  // every 5000 ms ,  Set flag with some period. This is explicitely for one thread
+	I2C3_Init(); // Init I2C Module3 for Temp Humidity Sensor
+	I2C1_Init(); // Init I2C Module1 for Gyroskop Accel magnetometer Sensor
+	
+	if (Init_MPU9250() == 1){   //Initialize Magnetometer 
+		return 1;
+	}
+	
+	//OS_PeriodTrigger0_Init(&TakeJoystickData,5000);  // every 5000 ms ,  Set flag with some period for one thread. This is explicitely for one thread, period time can be less then 1HZ.  For example 5 times pro second
 	//OS_PeriodTrigger0_Init(&TakeJoystickData,1);  // every 1 ms ,  Set flag with some period. This is explicitely for one thread
 
 

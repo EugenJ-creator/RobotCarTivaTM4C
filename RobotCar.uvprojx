@@ -513,6 +513,26 @@
               <FileType>1</FileType>
               <FilePath>..\inc\GPIO.c</FilePath>
             </File>
+            <File>
+              <FileName>I2C3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\I2C3.c</FilePath>
+            </File>
+            <File>
+              <FileName>I2C3.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\I2C3.h</FilePath>
+            </File>
+            <File>
+              <FileName>I2C1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\I2C1.c</FilePath>
+            </File>
+            <File>
+              <FileName>I2C1.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\I2C1.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -527,6 +547,26 @@
               <FileName>Buzzer.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Buzzer.h</FilePath>
+            </File>
+            <File>
+              <FileName>TempHumidity.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\TempHumidity.c</FilePath>
+            </File>
+            <File>
+              <FileName>TempHumidity.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\TempHumidity.h</FilePath>
+            </File>
+            <File>
+              <FileName>GyroAccelMag.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\GyroAccelMag.c</FilePath>
+            </File>
+            <File>
+              <FileName>GyroAccelMag.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\GyroAccelMag.h</FilePath>
             </File>
           </Files>
         </Group>
