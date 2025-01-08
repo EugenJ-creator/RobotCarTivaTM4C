@@ -168,7 +168,7 @@ void Task0(void){
 				SendTempHumidityFlag = 0;
 			}
 		}
-
+		WaitForInterrupt();
 	}
 }
 /* ****************************************** */
@@ -246,12 +246,8 @@ void Task3(void){
 void Task4(void){
 
   while(1){
-		OS_Wait(&NewBluetoothBuzzerData); // New Buzzer Volume are ready
-		if (BuzzerVolume!=0){
-			BuzzerOn(BuzzerVolume);
-		} else {
-			BuzzerOff();
-		}
+		//OS_Wait(&NewBluetoothBuzzerData); // New Buzzer Volume are ready
+		
 		
 //		WaitForInterrupt();
   }
@@ -400,9 +396,15 @@ void Bluetooth_Write_Wheel_Direction_Value(){
 // Output: none
 void Bluetooth_Write_Buzzer_Value(){  // write angle
 
+	//BuzzerVolume = CharacteristicList[3].pt[0];   ///   Is not necessary
+	if (BuzzerVolume!=0){
+			BuzzerOn(BuzzerVolume);
+		} else {
+			BuzzerOff();
+		}
 	
-	BuzzerVolume = CharacteristicList[3].pt[0];   ///   Is not necessary
-  OS_Signal(&NewBluetoothBuzzerData);  // Set Semaphore NewSpeedData
+	
+  //OS_Signal(&NewBluetoothBuzzerData);  // Set Semaphore NewSpeedData
 
 }
 
@@ -460,7 +462,7 @@ int main(void){
   OS_InitSemaphore(&NewBluetoothSpeedData, 0);  // 0 means no data
 	OS_InitSemaphore(&NewBluetoothAngleData, 0);  // 0 means no data
 	OS_InitSemaphore(&AnglePositionChanged, 0);  // 0 means no data
-	OS_InitSemaphore(&NewBluetoothBuzzerData, 0);  // 0 means no data
+	//OS_InitSemaphore(&NewBluetoothBuzzerData, 0);  // 0 means no data
 	OS_InitSemaphore(&NewTempHumidityData, 0);  // 0 means no data
 	
 	// Task 6 should run every 1000ms
@@ -492,7 +494,7 @@ int main(void){
 	I2C1_Init(); // Init I2C Module1 for Gyroskop Accel magnetometer Sensor
 	
 	if (Init_MPU9250() == 1){   //Initialize Magnetometer 
-		return 1;
+		// Notify user:  for example with Led:    Initialization of magnetometer couldn't be done
 	}
 	
 	//OS_PeriodTrigger0_Init(&TakeJoystickData,5000);  // every 5000 ms ,  Set flag with some period for one thread. This is explicitely for one thread, period time can be less then 1HZ.  For example 5 times pro second

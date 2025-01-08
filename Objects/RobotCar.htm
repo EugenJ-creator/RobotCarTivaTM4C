@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\RobotCar.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\RobotCar.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Wed Jan 08 01:40:55 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Wed Jan 08 19:12:39 2025
 <BR><P>
 <H3>Maximum Stack Usage =        264 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1216,7 +1216,7 @@ Global Symbols
 <P><STRONG><a name="[8c]"></a>DisableInterrupts</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup_tm4c123.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART0_Init
 <LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Wait
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
 <LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Init
 </UL>
 
@@ -1224,7 +1224,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART1_Init
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART0_Init
 <LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Wait
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
 <LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Init
 </UL>
 
@@ -1238,7 +1238,9 @@ Global Symbols
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BSP_PeriodicTask_Init
 </UL>
 
-<P><STRONG><a name="[90]"></a>WaitForInterrupt</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup_tm4c123.o(.text), UNUSED, KEPT)
+<P><STRONG><a name="[90]"></a>WaitForInterrupt</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup_tm4c123.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task0
+</UL>
 
 <P><STRONG><a name="[91]"></a>__user_initial_stackheap</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup_tm4c123.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__user_setup_stackheap
@@ -1330,7 +1332,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AP_SendMessage
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AP_EchoSendMessage
 <LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AP_EchoReceived
-<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
+<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
 </UL>
 
 <P><STRONG><a name="[af]"></a>AP_Init</STRONG> (Thumb, 184 bytes, Stack size 16 bytes, ap.o(i.AP_Init))
@@ -1489,11 +1491,11 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[7d]"></a>Bluetooth_Write_Buzzer_Value</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, robotcar.o(i.Bluetooth_Write_Buzzer_Value))
-<BR><BR>[Stack]<UL><LI>Max Depth = 24 + Unknown Stack Size
-<LI>Call Chain = Bluetooth_Write_Buzzer_Value &rArr; OS_Signal
+<P><STRONG><a name="[7d]"></a>Bluetooth_Write_Buzzer_Value</STRONG> (Thumb, 24 bytes, Stack size 8 bytes, robotcar.o(i.Bluetooth_Write_Buzzer_Value))
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = Bluetooth_Write_Buzzer_Value &rArr; BuzzerOn
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
+<BR>[Calls]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuzzerOn
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuzzerOff
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> robotcar.o(i.Bluetooth_Init)
 </UL>
@@ -1501,7 +1503,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + Unknown Stack Size
 <LI>Call Chain = Bluetooth_Write_Speed_Motor_Value &rArr; OS_Signal
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
+<BR>[Calls]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> robotcar.o(i.Bluetooth_Init)
 </UL>
@@ -1509,7 +1511,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + Unknown Stack Size
 <LI>Call Chain = Bluetooth_Write_Stear_Angle_Value &rArr; OS_Signal
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
+<BR>[Calls]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> robotcar.o(i.Bluetooth_Init)
 </UL>
@@ -1522,7 +1524,7 @@ Global Symbols
 <P><STRONG><a name="[bd]"></a>BuildAddCharDescriptorMsg</STRONG> (Thumb, 88 bytes, Stack size 16 bytes, ap_services.o(i.BuildAddCharDescriptorMsg))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = BuildAddCharDescriptorMsg &rArr; SetFCS &rArr; AP_GetSize
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
 </UL>
 <BR>[Called By]<UL><LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AddCharacteristic
 </UL>
@@ -1530,7 +1532,7 @@ Global Symbols
 <P><STRONG><a name="[bc]"></a>BuildAddCharValueMsg</STRONG> (Thumb, 64 bytes, Stack size 24 bytes, ap_services.o(i.BuildAddCharValueMsg))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = BuildAddCharValueMsg &rArr; SetFCS &rArr; AP_GetSize
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
 </UL>
 <BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AddNotifyCharacteristic
 <LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AddCharacteristic
@@ -1539,7 +1541,7 @@ Global Symbols
 <P><STRONG><a name="[bf]"></a>BuildAddNotifyCharDescriptorMsg</STRONG> (Thumb, 92 bytes, Stack size 16 bytes, ap_services.o(i.BuildAddNotifyCharDescriptorMsg))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = BuildAddNotifyCharDescriptorMsg &rArr; SetFCS &rArr; AP_GetSize
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
 </UL>
 <BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AddNotifyCharacteristic
 </UL>
@@ -1547,7 +1549,7 @@ Global Symbols
 <P><STRONG><a name="[c1]"></a>BuildAddServiceMsg</STRONG> (Thumb, 44 bytes, Stack size 16 bytes, ap_services.o(i.BuildAddServiceMsg))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = BuildAddServiceMsg &rArr; SetFCS &rArr; AP_GetSize
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AddService
 </UL>
@@ -1560,61 +1562,61 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetVersion
 </UL>
 
-<P><STRONG><a name="[ce]"></a>BuildRegisterServiceMsg</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, ap_services.o(i.BuildRegisterServiceMsg))
+<P><STRONG><a name="[d0]"></a>BuildRegisterServiceMsg</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, ap_services.o(i.BuildRegisterServiceMsg))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = BuildRegisterServiceMsg &rArr; SetFCS &rArr; AP_GetSize
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
 </UL>
 <BR>[Called By]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RegisterService
 </UL>
 
-<P><STRONG><a name="[cf]"></a>BuildSetAdvertisementData1Msg</STRONG> (Thumb, 72 bytes, Stack size 8 bytes, ap_services.o(i.BuildSetAdvertisementData1Msg))
+<P><STRONG><a name="[d1]"></a>BuildSetAdvertisementData1Msg</STRONG> (Thumb, 72 bytes, Stack size 8 bytes, ap_services.o(i.BuildSetAdvertisementData1Msg))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = BuildSetAdvertisementData1Msg &rArr; SetFCS &rArr; AP_GetSize
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
 </UL>
 <BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartAdvertisement
 </UL>
 
-<P><STRONG><a name="[d0]"></a>BuildSetAdvertisementDataMsg</STRONG> (Thumb, 160 bytes, Stack size 16 bytes, ap_services.o(i.BuildSetAdvertisementDataMsg))
+<P><STRONG><a name="[d2]"></a>BuildSetAdvertisementDataMsg</STRONG> (Thumb, 160 bytes, Stack size 16 bytes, ap_services.o(i.BuildSetAdvertisementDataMsg))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = BuildSetAdvertisementDataMsg &rArr; SetFCS &rArr; AP_GetSize
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
 </UL>
 <BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartAdvertisement
 </UL>
 
-<P><STRONG><a name="[d1]"></a>BuildSetDeviceNameMsg</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, ap_services.o(i.BuildSetDeviceNameMsg))
+<P><STRONG><a name="[d3]"></a>BuildSetDeviceNameMsg</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, ap_services.o(i.BuildSetDeviceNameMsg))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = BuildSetDeviceNameMsg &rArr; SetFCS &rArr; AP_GetSize
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
 </UL>
 <BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartAdvertisement
 </UL>
 
-<P><STRONG><a name="[d2]"></a>BuildStartAdvertisementMsg</STRONG> (Thumb, 76 bytes, Stack size 16 bytes, ap_services.o(i.BuildStartAdvertisementMsg))
+<P><STRONG><a name="[d4]"></a>BuildStartAdvertisementMsg</STRONG> (Thumb, 76 bytes, Stack size 16 bytes, ap_services.o(i.BuildStartAdvertisementMsg))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = BuildStartAdvertisementMsg &rArr; SetFCS &rArr; AP_GetSize
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetFCS
 </UL>
 <BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartAdvertisement
 </UL>
 
-<P><STRONG><a name="[d3]"></a>BuzzerOff</STRONG> (Thumb, 8 bytes, Stack size 8 bytes, buzzer.o(i.BuzzerOff))
+<P><STRONG><a name="[cd]"></a>BuzzerOff</STRONG> (Thumb, 8 bytes, Stack size 8 bytes, buzzer.o(i.BuzzerOff))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = BuzzerOff
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PWM0_0_B_disable
+<BR>[Calls]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PWM0_0_B_disable
 </UL>
-<BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task4
+<BR>[Called By]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Bluetooth_Write_Buzzer_Value
 </UL>
 
-<P><STRONG><a name="[d5]"></a>BuzzerOn</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, buzzer.o(i.BuzzerOn))
+<P><STRONG><a name="[cc]"></a>BuzzerOn</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, buzzer.o(i.BuzzerOn))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = BuzzerOn
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PWM0_0_B_enable
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PWM0_0_B_Duty
 </UL>
-<BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task4
+<BR>[Called By]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Bluetooth_Write_Buzzer_Value
 </UL>
 
 <P><STRONG><a name="[b6]"></a>Clock_Delay1ms</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, cortexm_1.o(i.Clock_Delay1ms))
@@ -1691,7 +1693,7 @@ Global Symbols
 <LI>Call Chain = GPIOPortD_Handler &rArr; OS_Signal
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Suspend
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_tm4c123.o(RESET)
 </UL>
@@ -1832,7 +1834,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[cc]"></a>OS_Signal</STRONG> (Thumb, 46 bytes, Stack size 16 bytes, os.o(i.OS_Signal))
+<P><STRONG><a name="[ce]"></a>OS_Signal</STRONG> (Thumb, 46 bytes, Stack size 16 bytes, os.o(i.OS_Signal))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16 + Unknown Stack Size
 <LI>Call Chain = OS_Signal
 </UL>
@@ -1842,7 +1844,6 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task1
 <LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Bluetooth_Write_Stear_Angle_Value
 <LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Bluetooth_Write_Speed_Motor_Value
-<LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Bluetooth_Write_Buzzer_Value
 <LI><a href="#[10]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPortD_Handler
 </UL>
 
@@ -1870,14 +1871,13 @@ Global Symbols
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DisableInterrupts
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Suspend
 </UL>
-<BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task4
-<LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task3
+<BR>[Called By]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task3
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task2
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task1
 </UL>
 
 <P><STRONG><a name="[d6]"></a>PWM0_0_B_Duty</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, pwm.o(i.PWM0_0_B_Duty))
-<BR><BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuzzerOn
+<BR><BR>[Called By]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuzzerOn
 </UL>
 
 <P><STRONG><a name="[110]"></a>PWM0_0_B_Init</STRONG> (Thumb, 172 bytes, Stack size 8 bytes, pwm.o(i.PWM0_0_B_Init))
@@ -1886,12 +1886,12 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d4]"></a>PWM0_0_B_disable</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, pwm.o(i.PWM0_0_B_disable))
-<BR><BR>[Called By]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuzzerOff
+<P><STRONG><a name="[d5]"></a>PWM0_0_B_disable</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, pwm.o(i.PWM0_0_B_disable))
+<BR><BR>[Called By]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuzzerOff
 </UL>
 
 <P><STRONG><a name="[d7]"></a>PWM0_0_B_enable</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, pwm.o(i.PWM0_0_B_enable))
-<BR><BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuzzerOn
+<BR><BR>[Called By]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuzzerOn
 </UL>
 
 <P><STRONG><a name="[e4]"></a>PWM0_3_A_Duty</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, pwm.o(i.PWM0_3_A_Duty))
@@ -1991,7 +1991,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = RegisterService &rArr; AP_SendMessageResponse &rArr; AP_RecvMessage &rArr; UART1_InChar
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AP_SendMessageResponse
-<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildRegisterServiceMsg
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildRegisterServiceMsg
 <LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART0_OutString
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Bluetooth_Init
@@ -2013,16 +2013,16 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
 </UL>
 
-<P><STRONG><a name="[cd]"></a>SetFCS</STRONG> (Thumb, 38 bytes, Stack size 24 bytes, ap_services.o(i.SetFCS))
+<P><STRONG><a name="[cf]"></a>SetFCS</STRONG> (Thumb, 38 bytes, Stack size 24 bytes, ap_services.o(i.SetFCS))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = SetFCS &rArr; AP_GetSize
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AP_GetSize
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildStartAdvertisementMsg
-<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildSetDeviceNameMsg
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildSetAdvertisementDataMsg
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildSetAdvertisementData1Msg
-<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildRegisterServiceMsg
+<BR>[Called By]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildStartAdvertisementMsg
+<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildSetDeviceNameMsg
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildSetAdvertisementDataMsg
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildSetAdvertisementData1Msg
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildRegisterServiceMsg
 <LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildAddServiceMsg
 <LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildAddNotifyCharDescriptorMsg
 <LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildAddCharValueMsg
@@ -2037,10 +2037,10 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = StartAdvertisement &rArr; AP_SendMessageResponse &rArr; AP_RecvMessage &rArr; UART1_InChar
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AP_SendMessageResponse
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildStartAdvertisementMsg
-<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildSetDeviceNameMsg
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildSetAdvertisementDataMsg
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildSetAdvertisementData1Msg
+<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildStartAdvertisementMsg
+<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildSetDeviceNameMsg
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildSetAdvertisementDataMsg
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuildSetAdvertisementData1Msg
 <LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART0_OutString
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Bluetooth_Init
@@ -2051,10 +2051,12 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_tm4c123.o(RESET)
 </UL>
-<P><STRONG><a name="[89]"></a>Task0</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, robotcar.o(i.Task0))
-<BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = Task0 &rArr; AP_SendNotification &rArr; AP_SendMessageResponse &rArr; AP_RecvMessage &rArr; UART1_InChar
+<P><STRONG><a name="[89]"></a>Task0</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, robotcar.o(i.Task0))
+<BR><BR>[Stack]<UL><LI>Max Depth = 128 + Unknown Stack Size
+<LI>Call Chain = Task0 &rArr; AP_SendNotification &rArr; AP_SendMessageResponse &rArr; AP_RecvMessage &rArr; UART1_InChar
 </UL>
-<BR>[Calls]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AP_SendNotification
+<BR>[Calls]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WaitForInterrupt
+<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AP_SendNotification
 <LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AP_BackgroundProcess
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> robotcar.o(i.main)
@@ -2065,7 +2067,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servoupdownarm
 <LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Wait
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> robotcar.o(i.main)
 </UL>
@@ -2089,14 +2091,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> robotcar.o(i.main)
 </UL>
-<P><STRONG><a name="[85]"></a>Task4</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, robotcar.o(i.Task4))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8 + Unknown Stack Size
-<LI>Call Chain = Task4 &rArr; BuzzerOn
-</UL>
-<BR>[Calls]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuzzerOn
-<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BuzzerOff
-<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Wait
-</UL>
+<P><STRONG><a name="[85]"></a>Task4</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, robotcar.o(i.Task4))
 <BR>[Address Reference Count : 1]<UL><LI> robotcar.o(i.main)
 </UL>
 <P><STRONG><a name="[84]"></a>Task5</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, robotcar.o(i.Task5))
@@ -2277,7 +2272,7 @@ Global Symbols
 <LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ConfigAccelRange
 </UL>
 
-<P><STRONG><a name="[9a]"></a>main</STRONG> (Thumb, 176 bytes, Stack size 72 bytes, robotcar.o(i.main))
+<P><STRONG><a name="[9a]"></a>main</STRONG> (Thumb, 162 bytes, Stack size 72 bytes, robotcar.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 264 + Unknown Stack Size
 <LI>Call Chain = main &rArr; Bluetooth_Init &rArr; AddNotifyCharacteristic &rArr; AP_SendMessageResponse &rArr; AP_RecvMessage &rArr; UART1_InChar
 </UL>
