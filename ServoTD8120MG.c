@@ -46,11 +46,11 @@ void Angle(uint32_t degree){
 			}
 			
 		
-			PWM1_1_A_disable();
+			PWM0_3_A_disable();
 			// New Duty Cycle
-			PWM1_1_A_Duty( (5*Duty));
+			PWM0_3_A_Duty( (5*Duty));
 			// Activate PWM Signal
-			PWM1_1_A_enable();
+			PWM0_3_A_enable();
 				//EnableInterrupts();	
 	}
 		

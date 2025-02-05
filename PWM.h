@@ -69,18 +69,18 @@ void PWM0_0_B_Deactivate(void);
 // PWM clock rate = processor clock rate/SYSCTL_RCC_PWMDIV
 //                = BusClock/16 
 //                = 80 MHz/16 = 5 MHz (in this example)
-// Output on PA6/M1PWM2
-void PWM1_1_A_Init(uint16_t period, uint16_t duty);
+// Output on PB4/M0PWM2
+void PWM0_1_A_Init(uint16_t period, uint16_t duty);
 	
-// change duty cycle of PA6
+// change duty cycle of PB4
 // duty is number of PWM clock cycles output is high  (2<=duty<=period-1)
-void PWM1_1_A_Duty(uint16_t duty); // 6) count value when output rises
+void PWM0_1_A_Duty(uint16_t duty); // 6) count value when output rises
 
 	
-void PWM1_1_A_enable(void);      // enable PA6/M1PWM2
+void PWM0_1_A_enable(void);      // enable PB4/M0PWM2
 
 
-void PWM1_1_A_disable(void);         // disable PA6/M1PWM2
+void PWM0_1_A_disable(void);         // disable PB4/M0PWM2
 
 //---------------------------------------------------------------------------------------
 //---------------BSP-  DC Motor Speed TCC Init Pins 

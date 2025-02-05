@@ -14,7 +14,7 @@
 void DCforward(uint32_t speed , uint32_t direction){
 	
 	if (speed == 0) {
-		PWM0_3_A_disable();   // Deaktivate PWM for DC Motor if velocity is 0
+		PWM0_1_A_disable();   // Deaktivate PWM for DC Motor if velocity is 0
 		PortB_2_disable();  //  DC IN1 LOW
 		PortB_3_disable();  //  DC IN2 LOW
 
@@ -23,11 +23,11 @@ void DCforward(uint32_t speed , uint32_t direction){
 		PortB_2_enable();  //  DC IN1 HIGH
 		PortB_3_disable();  //  DC IN2 LOW
 		
-		PWM0_3_A_disable();
+		PWM0_1_A_disable();
 		// New Duty Cycle
-		PWM0_3_A_Duty(speed-1);
+		PWM0_1_A_Duty(speed-1);
 		// Activate PWM Signal
-		PWM0_3_A_enable();
+		PWM0_1_A_enable();
 
 	}
 	
@@ -39,7 +39,7 @@ void DCforward(uint32_t speed , uint32_t direction){
 void DCbackward(uint32_t speed , uint32_t direction){
 
 if (speed == 0) {
-		PWM0_3_A_disable();   // Deaktivate PWM for DC Motor if velocity is 0
+		PWM0_1_A_disable();   // Deaktivate PWM for DC Motor if velocity is 0
 		PortB_2_disable();  //  DC IN1 LOW
 		PortB_3_disable();  //  DC IN2 LOW
 
@@ -48,10 +48,10 @@ if (speed == 0) {
 		PortB_2_disable();  //  DC IN1 LOW
 		PortB_3_enable();  //  DC IN2 HIGH
 		
-		PWM0_3_A_disable();
+		PWM0_1_A_disable();
 		// New Duty Cycle
-		PWM0_3_A_Duty(speed-1);
+		PWM0_1_A_Duty(speed-1);
 		// Activate PWM Signal
-		PWM0_3_A_enable();
+		PWM0_1_A_enable();
 	}
 }

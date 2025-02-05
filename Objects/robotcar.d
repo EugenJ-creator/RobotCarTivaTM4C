@@ -25,3 +25,5 @@
 .\objects\robotcar.o: TempHumidity.h
 .\objects\robotcar.o: I2C3.h
 .\objects\robotcar.o: GyroAccelMag.h
+.\objects\robotcar.o: LightSensor.h
+.\objects\robotcar.o: ADCT0.h

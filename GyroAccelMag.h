@@ -175,7 +175,7 @@ uint32_t ConfigSrd(uint8_t srd);
 
 uint8_t Read(void); 
 
-int ReadMagnetometerData(float *data);
+int ReadMagnetometerData(uint8_t *data, int16_t *data2);
 
 //	bool new_imu_data();
 //  float accel_x_mps2();

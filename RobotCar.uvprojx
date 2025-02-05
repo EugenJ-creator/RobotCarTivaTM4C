@@ -423,6 +423,11 @@
               <FileType>1</FileType>
               <FilePath>.\PLL.c</FilePath>
             </File>
+            <File>
+              <FileName>RobotCar.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\RobotCar.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -533,6 +538,16 @@
               <FileType>5</FileType>
               <FilePath>.\I2C1.h</FilePath>
             </File>
+            <File>
+              <FileName>ADCT0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\ADCT0.c</FilePath>
+            </File>
+            <File>
+              <FileName>ADCT0.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\ADCT0.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -567,6 +582,21 @@
               <FileName>GyroAccelMag.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\GyroAccelMag.h</FilePath>
+            </File>
+            <File>
+              <FileName>LightSensoe.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LightSensoe.c</FilePath>
+            </File>
+            <File>
+              <FileName>LightSensor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\LightSensor.h</FilePath>
+            </File>
+            <File>
+              <FileName>BoardLed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BoardLed.c</FilePath>
             </File>
           </Files>
         </Group>

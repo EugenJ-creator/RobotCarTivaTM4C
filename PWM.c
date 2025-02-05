@@ -87,51 +87,52 @@ void PWM0_0_B_Deactivate(void){
 // PWM clock rate = processor clock rate/SYSCTL_RCC_PWMDIV
 //                = BusClock/16 
 //                = 80 MHz/16 = 5 MHz (in this example)
-// Output on PA6/M1PWM2
-void PWM1_1_A_Init(uint16_t period, uint16_t duty){
 
-	volatile unsigned long delay;              //2-3 takts delay , volatile to not be optimized
-  SYSCTL_RCGCPWM_R |= 0x02;             // 1) activate PWM1 Modul
-  SYSCTL_RCGCGPIO_R |= 0x01;            // 2) activate port A
-	//SYSCTL_RCC_R &= ~SYSCTL_RCC_USEPWMDIV;
-	
-	SYSCTL_RCC_R |= SYSCTL_RCC_USEPWMDIV; // 3) use PWM divider
+// Output on PB4/M0PWM2
+
+void PWM0_1_A_Init(uint16_t period, uint16_t duty){
+  volatile unsigned long delay;
+  SYSCTL_RCGCPWM_R |= 0x01;             // 1) activate PWM0
+  SYSCTL_RCGCGPIO_R |= 0x02;            // 2) activate port B
+  delay = SYSCTL_RCGCGPIO_R;            // allow time to finish activating
+  GPIO_PORTB_AFSEL_R |= 0x10;           // enable alt funct on PB4
+  GPIO_PORTB_PCTL_R &= ~0x000F0000;     // configure PB4 as M0PWM2
+  GPIO_PORTB_PCTL_R |=  0x00040000;
+  GPIO_PORTB_AMSEL_R &= ~0x10;          // disable analog functionality on PB4
+  GPIO_PORTB_DEN_R |= 0x10;             // enable digital I/O on PB4
+  SYSCTL_RCC_R |= SYSCTL_RCC_USEPWMDIV; // 3) use PWM divider
   SYSCTL_RCC_R &= ~SYSCTL_RCC_PWMDIV_M; //    clear PWM divider field
-//  SYSCTL_RCC_R += SYSCTL_RCC_PWMDIV_32;  //    configure for /32 divider
-	SYSCTL_RCC_R += SYSCTL_RCC_PWMDIV_16;
-	
-  GPIO_PORTA_AFSEL_R |= 0x40;           // enable alt funct on PA6
-  GPIO_PORTA_PCTL_R &= ~0x0F000000;     // configure PA6 as M1PWM2
-  GPIO_PORTA_PCTL_R |= 0x05000000;			//  M1PWM2
-  GPIO_PORTA_AMSEL_R &= ~0x40;          // disable analog functionality on PA6
-  GPIO_PORTA_DEN_R |= 0x40;             // enable digital I/O on PA6
-	
-	PWM1_1_CTL_R &= ~(1<<0) ;                     // 4) disable Generator (For A and B the same)
-	PWM1_1_CTL_R &= ~(1<<1) ;                     // 4) re-loading down-counting mode
-  //PWM1_3_GENA_R = (PWM_3_GENA_ACTCMPBD_ONE|PWM_3_GENA_ACTLOAD_ZERO);  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		PWM1_1_GENA_R = (PWM_1_GENA_ACTCMPAD_ZERO|PWM_1_GENA_ACTLOAD_ONE);
-  // PB7 goes low on LOAD
-  // PB7 goes high on CMPB down
-  PWM1_1_LOAD_R = period - 1;           // 5) cycles needed to count down to 0
-  PWM1_1_CMPA_R = duty - 1;             // 6) count value when output rises
-  PWM1_1_CTL_R |= 0x00000001;           // 7) start M1PWM2
-	//PWM1_ENABLE_R |= 0x00000004;          // enable PA6/M1PWM2
-  PWM1_ENABLE_R &= (~0x00000004);          // disable PA6/M1PWM2
-	}
-	
-	// change duty cycle of PA6
-	// duty is number of PWM clock cycles output is high  (2<=duty<=period-1)
-	void PWM1_1_A_Duty(uint16_t duty){
-  PWM1_1_CMPA_R = duty - 1;             // 6) count value when output rises
+  SYSCTL_RCC_R += SYSCTL_RCC_PWMDIV_16;  //    configure for /16 divider
+  PWM0_1_CTL_R = 0;                     // 4) re-loading down-counting mode
+  PWM0_1_GENA_R = (PWM_1_GENA_ACTCMPAD_ONE|PWM_1_GENA_ACTLOAD_ZERO);
+  // PB4 goes low on LOAD
+  // PB4 goes high on CMPB down
+  PWM0_1_LOAD_R = period - 1;           // 5) cycles needed to count down to 0
+  PWM0_1_CMPA_R = duty - 1;             // 6) count value when output rises
+  PWM0_1_CTL_R |= 0x00000001;           // 7) start PWM0
+	PWM0_ENABLE_R &= (~0x00000004);          // disable PB4/M0PWM2
+  //PWM0_ENABLE_R |= 0x00000004;          // enable PB4/M0PWM2
 }
-	
-	void PWM1_1_A_enable(void){
-  PWM1_ENABLE_R |= 0x00000004;          // enable PA6/M1PWM2
+// change duty cycle of PB4
+// duty is number of PWM clock cycles output is high  (2<=duty<=period-1)
+void PWM0_1_A_Duty(uint16_t duty){
+  PWM0_1_CMPA_R = duty - 1;             // 6) count value when output rises
 }
 
-void PWM1_1_A_disable(void){
-  PWM1_ENABLE_R &= (~0x00000004);          // disable PA6/M1PWM2
+void PWM0_1_A_enable(void){
+  PWM0_ENABLE_R |= 0x00000004;          // enable PB4/M0PWM2
 }
+
+void PWM0_1_A_disable(void){
+  PWM0_ENABLE_R &= (~0x00000004);          // disable PB4/M0PWM2
+}
+
+// deactivate PB4/M0PWM2
+void PWM0_1_A_Deactivate(void){   
+	PWM0_1_CTL_R &= ~(1<<0) ;                     //  disable Generator
+  PWM0_ENABLE_R &= (~0x00000004);          // disable PB4/M0PWM2
+}
+
 
 //------------------------------------------------------------------------------------------
 
@@ -143,17 +144,17 @@ void PWM1_1_A_disable(void){
 //                = BusClock/16 
 //                = 80 MHz/16 = 5 MHz (in this example)
 // Devider will the same for all PWM Modules
-// Output on PD0/M0PWM6
+// Output on PC4/M0PWM6
 void PWM0_3_A_Init(uint16_t period, uint16_t duty){
   volatile unsigned long delay;              //2-3 takts delay , volatile to not be optimized
   SYSCTL_RCGCPWM_R |= 0x01;             // 1) activate PWM0 Modul
-  SYSCTL_RCGCGPIO_R |= 0x08;            // 2) activate port D
+  SYSCTL_RCGCGPIO_R |= 0x04;            // 2) activate port C
   delay = SYSCTL_RCGCGPIO_R;            // allow time to finish activating
-  GPIO_PORTD_AFSEL_R |= 0x1;           // enable alt funct on PD0
-  GPIO_PORTD_PCTL_R &= ~0x0000000F;     // configure PD0 as M0PWM6
-  GPIO_PORTD_PCTL_R |= 0x00000004;
-  GPIO_PORTD_AMSEL_R &= ~0x1;          // disable analog functionality on PD0
-  GPIO_PORTD_DEN_R |= 0x1;             // enable digital I/O on PD0
+  GPIO_PORTC_AFSEL_R |= 0x10;            // enable alt funct on PC4
+  GPIO_PORTC_PCTL_R &= ~0x000F0000;     // configure PC4 as M0PWM6
+  GPIO_PORTC_PCTL_R |=  0x00040000;
+  GPIO_PORTC_AMSEL_R &= ~0x10;          // disable analog functionality on PC4
+  GPIO_PORTC_DEN_R |= 0x10;             // enable digital I/O on PD0
 
   SYSCTL_RCC_R |= SYSCTL_RCC_USEPWMDIV; // 3) use PWM divider
   SYSCTL_RCC_R &= ~SYSCTL_RCC_PWMDIV_M; //    clear PWM divider field
@@ -161,15 +162,17 @@ void PWM0_3_A_Init(uint16_t period, uint16_t duty){
 
 	PWM0_3_CTL_R &= ~(1<<0) ;                     // 4) disable Generator
 	PWM0_3_CTL_R &= ~(1<<1) ;                     // 4) re-loading down-counting mode
-  PWM0_3_GENA_R = (PWM_3_GENA_ACTCMPAD_ONE|PWM_3_GENA_ACTLOAD_ZERO);
+  //PWM0_3_GENA_R = (PWM_3_GENA_ACTCMPAD_ONE|PWM_3_GENA_ACTLOAD_ZERO);
+	PWM0_3_GENA_R = (PWM_3_GENA_ACTCMPAD_ZERO|PWM_3_GENA_ACTLOAD_ONE);
   // PB7 goes high on LOAD
   // PB7 goes low on CMPB down
   PWM0_3_LOAD_R = period - 1;           // 5) cycles needed to count down to 0
   PWM0_3_CMPA_R = duty - 1;             // 6) count value when output rises
   PWM0_3_CTL_R |= 0x00000001;           // 7) start PWM3
-	//PWM0_ENABLE_R |= 0x00000040;          // enable PD0/M0PWM6
-  PWM0_ENABLE_R &= (~0x00000040);          // disable PD0/M0PWM6
+	//PWM0_ENABLE_R |= 0x00000040;          // enable PC4/M0PWM6
+  PWM0_ENABLE_R &= (~0x00000040);          // disable PC4/M0PWM6
 }
+
 
 
 //void PWM0_3_A_Deactivate(void){
@@ -177,22 +180,28 @@ void PWM0_3_A_Init(uint16_t period, uint16_t duty){
 //  PWM0_1_GENA_R = (PWM_1_GENA_ACTCMPAD_NONE|PWM_1_GENA_ACTLOAD_ZERO);  
 //  PWM0_ENABLE_R &= (~0x00000004);          // disable PB4/M0PWM2
 //}
-// change duty cycle of PD0
+// change duty cycle of PC4
 // duty is number of PWM clock cycles output is high  (2<=duty<=period-1)
 void PWM0_3_A_Duty(uint16_t duty){
   PWM0_3_CMPA_R = duty - 1;             // 6) count value when output rises
 }
 
 void PWM0_3_A_enable(void){
-  PWM0_ENABLE_R |= 0x00000040;          // enable PD0/M0PWM6
+  PWM0_ENABLE_R |= 0x00000040;          // enable PC4/M0PWM6
 }
 
 void PWM0_3_A_disable(void){
-  PWM0_ENABLE_R &= (~0x00000040);          // disable PD0/M0PWM6
+  PWM0_ENABLE_R &= (~0x00000040);          // disable PC4/M0PWM6
 }
 
 // deactivate PD0/M0PWM6
 void PWM0_3_A_Deactivate(void){   
 	PWM0_3_CTL_R &= ~(1<<0) ;                     //  disable Generator
-  PWM0_ENABLE_R &= (~0x00000040);          // disable PD0/M0PWM6
+  PWM0_ENABLE_R &= (~0x00000040);          // disable PC4/M0PWM6
 }
+
+
+
+
+
+

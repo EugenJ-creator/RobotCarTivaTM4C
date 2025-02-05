@@ -31,7 +31,7 @@
 #include <stdint.h>
 #include "I2C1.h"
 #include "GyroAccelMag.h"
-
+#include "UART0.h"
 
   /* Data */
   //static float G_MPS2_ = 9.80665f;
@@ -430,13 +430,14 @@ uint8_t Read(void) {
   gyro_cnts_[1] =  (uint16_t)(data_buf_[11]) << 8 | data_buf_[12];
   gyro_cnts_[2] =  (uint16_t)(data_buf_[13]) << 8 | data_buf_[14];
   new_mag_data_ = (data_buf_[15] & AK8963_DATA_RDY_INT_);
-  mag_cnts_[0] =   (uint16_t)(data_buf_[17]) << 8 | data_buf_[16];
+  
+	mag_cnts_[0] =   (uint16_t)(data_buf_[17]) << 8 | data_buf_[16];
   mag_cnts_[1] =   (uint16_t)(data_buf_[19]) << 8 | data_buf_[18];
   mag_cnts_[2] =   (uint16_t)(data_buf_[21]) << 8 | data_buf_[20];
 	
 	
 	
-	  /* Unpack the buffer */
+//	  /* Unpack the buffer and transmit as unsigned for COM Port*/
   accel_cnts_u[0] = (uint16_t)(data_buf_[1])  << 8 | data_buf_[2];
   accel_cnts_u[1] = (uint16_t)(data_buf_[3])  << 8 | data_buf_[4];
   accel_cnts_u[2] = (uint16_t)(data_buf_[5])  << 8 | data_buf_[6];
@@ -654,7 +655,7 @@ uint32_t Init_MPU9250(void) {
 
 
 
-int ReadMagnetometerData(float *data){
+int ReadMagnetometerData(uint8_t *data, int16_t *data2){
 
 
 		
@@ -662,30 +663,73 @@ int ReadMagnetometerData(float *data){
   if (Read()==0) {
 
 
-		
-		data[0] =  (float)mag_cnts_u[0];
-		data[1] =  (float)mag_cnts_u[1];
-		data[2] =  (float)mag_cnts_u[2];
+ 
+//  To Check Int Values of Magnitometer , Signed Int
+		data2[0] =  (int16_t)mag_cnts_[0];
+		data2[1] =  (int16_t)mag_cnts_[1];
+		data2[2] =  (int16_t)mag_cnts_[2];
 
-		
-		//---------------
+		data[0] =  (uint8_t)data_buf_[21];
+		data[1] =  (uint8_t)data_buf_[20];
+		data[2] =  (uint8_t)data_buf_[19];
+		data[3] =  (uint8_t)data_buf_[18];
+		data[4] =  (uint8_t)data_buf_[17];
+		data[5] =  (uint8_t)data_buf_[16];
 
-	//	accel_x_mps2 = accel_cnts_[0];
-	//	accel_y_mps2 = accel_cnts_[1];
-	//	accel_z_mps2 = accel_cnts_[2];
-	////--------------------		
-	//		
-	//		
-	//		
-	//		
-	//	
-	//	accel_x_mps2_u = accel_cnts_u[0];
-	//	accel_y_mps2_u = accel_cnts_u[1];
-	//	accel_z_mps2_u = accel_cnts_u[2];
 
-	//	gyro_x_radps_u = gyro_cnts_u[0];
-	//	gyro_y_radps_u = gyro_cnts_u[1];
-	//	gyro_z_radps_u = gyro_cnts_u[2];
+	////------------------------------------------------------------		
+
+	
+//---------------------------- For calibration---------------------
+	
+//  mag_x_ut_u = mag_cnts_u[0];
+//  mag_y_ut_u =  mag_cnts_u[1];
+//  mag_z_ut_u =  mag_cnts_u[2];
+//	
+//	accel_x_mps2_u = accel_cnts_u[0];
+//	accel_y_mps2_u = accel_cnts_u[1];
+//	accel_z_mps2_u = accel_cnts_u[2];
+
+//	gyro_x_radps_u = gyro_cnts_u[0];
+//	gyro_y_radps_u = gyro_cnts_u[1];
+//	gyro_z_radps_u = gyro_cnts_u[2];
+//	
+//	
+//	
+//	UART0_OutUHex(accel_x_mps2_u);	
+//	UART0_OutChar(';');
+//	UART0_OutUHex(accel_y_mps2_u);
+//	UART0_OutChar(';');
+//	UART0_OutUHex(accel_z_mps2_u);
+//	UART0_OutChar(';');	
+//	
+
+//	UART0_OutUHex(mag_x_ut_u);	
+//	UART0_OutChar(';');
+//	UART0_OutUHex(mag_y_ut_u);
+//	UART0_OutChar(';');
+//	UART0_OutUHex(mag_z_ut_u);	
+//	UART0_OutChar(';');
+//	
+
+
+//	UART0_OutUHex(gyro_x_radps_u);	
+//	UART0_OutChar(';');
+//	UART0_OutUHex(gyro_y_radps_u);
+//	UART0_OutChar(';');
+//	UART0_OutUHex(gyro_z_radps_u);	
+//		
+//	UART0_OutString(";\n");
+	
+//------------------------------	
+	
+	
+	
+	
+	
+	
+	
+	
 	return 0;
 	}	else{
 		return 1;

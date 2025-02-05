@@ -59,7 +59,9 @@
 #include "I2C1.h"
 #include "TempHumidity.h"
 #include "GyroAccelMag.h"
-
+#include "LightSensor.h"
+//#include "RobotCar.h"
+#include "ADCT0.h"
 
 #define THREADFREQ 1000   // frequency in Hz of round robin scheduler
 
@@ -88,21 +90,25 @@ uint32_t AngleWheels;    // 0...180
 //uint32_t SpeedAngleWheels;    // 0..9 Sensitivity
 uint32_t BuzzerVolume;  // 0...1600
 uint8_t tempHumidityData[6];  // Data Array for bluetooth notification
-float magnetometerData[3];  // x, y, z   big indian
+//int16_t magnetometerData[3];  // x, y, z   little indian
+uint8_t magnetometerData[6];  // x, y, z   little indian
+int16_t magnetometerData2[3];  // x, y, z   little indian
 
 
+extern uint32_t lightIntensity;   //   Light intensity , Measured all 10 HZ
+uint32_t lastLightIntensity = 70; // Last measured intenity
 
 // semaphores
 int32_t NewBluetoothDirectionData;  // true when new Speed Value comes from Bluetooth Client
 int32_t NewBluetoothSpeedData;  // true when new Speed Value comes from Bluetooth Client
-int32_t NewBluetoothAngleData;  // true when new Angle Value comes from Bluetooth Client
+//int32_t NewBluetoothAngleData;  // true when new Angle Value comes from Bluetooth Client
 int32_t AnglePositionChanged; 	// true after triggering new angle position
-int32_t NewBluetoothBuzzerData; // true when new Buzzer volume comes from Bluetooth Client
+//int32_t NewBluetoothBuzzerData; // true when new Buzzer volume comes from Bluetooth Client
 int32_t NewTempHumidityData; 		// true when new Temp&Humidity Sensor data are ready
 
 
 uint8_t SendTempHumidityFlag=0;
-
+uint8_t SendMagnetometerFlag=0;
 
 uint8_t TakeJoystickData; // binary semaphore
 
@@ -168,6 +174,14 @@ void Task0(void){
 				SendTempHumidityFlag = 0;
 			}
 		}
+		
+		if (SendMagnetometerFlag){
+			if (AP_SendNotification(1)){   // Send data for 1 Characteristic , Magnetometer
+				SendMagnetometerFlag = 0;
+			}
+		}
+
+
 		WaitForInterrupt();
 	}
 }
@@ -188,11 +202,11 @@ void Task1(void){
 		// Toggle PE2
 		//Profile_Toggle1();
 		
-		OS_Wait(&NewBluetoothAngleData); // New wheels position is ready
-		servoupdownarm(AngleWheels, 0); // 0..160
-		if (SpeedWheels==0){
-			OS_Signal(&AnglePositionChanged);  // Signal that Wheel position was changed
-		}
+//		OS_Wait(&NewBluetoothAngleData); // New wheels position is ready
+//		servoupdownarm(AngleWheels, 0); // 0..160
+//		if (SpeedWheels==0){
+//			OS_Signal(&AnglePositionChanged);  // Signal that Wheel position was changed
+//		}
 //		servoupdownarm(140, 0);
 
 
@@ -208,15 +222,15 @@ void Task2(void){
 
   while(1){
 		
-		OS_Wait(&NewBluetoothSpeedData); // New speed parameters are ready  
-		if (DirectionWheels==0)
-		{
-			DCforward(SpeedWheels , 0);  //between(0..250)  Forward Direction
-		} 
-		else
-		{
-			DCbackward(SpeedWheels , 0);  //between(0..250)  Backward Direction
-		}
+//		OS_Wait(&NewBluetoothSpeedData); // New speed parameters are ready  
+//		if (DirectionWheels==0)
+//		{
+//			DCforward(SpeedWheels , 0);  //between(0..250)  Forward Direction
+//		} 
+//		else
+//		{
+//			DCbackward(SpeedWheels , 0);  //between(0..250)  Backward Direction
+//		}
 		//WaitForInterrupt();
 	}
 }
@@ -231,7 +245,7 @@ void Task3(void){
 			OS_Wait(&AnglePositionChanged);
 			OS_Sleep(3000);     // waits about 3 sec after what wheel position was changed
 			if (SpeedWheels==0){  // If still speed of wheels is Null, disconnect PWM for stearing
-				PWM1_1_A_disable();
+				PWM0_3_A_disable();
 			}
 //		WaitForInterrupt();
   }
@@ -280,8 +294,10 @@ void Task6(void){
   while(1){
 
 		// Send notification with index null
-		ReadMagnetometerData(magnetometerData);
-		OS_Sleep(50);     // waits about 1 sec	
+		if (ReadMagnetometerData(magnetometerData, magnetometerData2)==0){
+			SendMagnetometerFlag = 1;
+		}
+		OS_Sleep(400);     // waits about 1 sec	
 		
 	}
 	
@@ -297,8 +313,18 @@ void Task6(void){
 void Task7(void){
 
   while(1){
-
-//		WaitForInterrupt();
+//  Modify will be trigered all the time 
+//		//WaitForInterrupt();
+//		if (((lightIntensity<20)&&(lastLightIntensity > 50))|| ((lightIntensity<20)&&(lastLightIntensity < 20))){
+//			BuzzerOn(200);
+//			lastLightIntensity = lightIntensity;
+//		} else if (((lightIntensity>50) && (lastLightIntensity<20))||((lightIntensity>50) && (lastLightIntensity>50))) {
+//			BuzzerOff();
+//			lastLightIntensity = lightIntensity;
+//		} else {
+//			lastLightIntensity = lightIntensity;
+//		}
+		
   }
 }
 
@@ -351,9 +377,18 @@ void Task10(void){
 // Output: none
 void Bluetooth_Write_Stear_Angle_Value(){  // write angle
 
-	AngleWheels = CharacteristicList[1].pt[0];  
-  OS_Signal(&NewBluetoothAngleData); // Set Semaphore NewAngleData
+		servoupdownarm(AngleWheels, 0); // 0..160
+		if (SpeedWheels==0){
+			OS_Signal(&AnglePositionChanged);  // Signal that Wheel position was changed
+		}
+	
+	//AngleWheels = CharacteristicList[1].pt[0];  
+  //OS_Signal(&NewBluetoothAngleData); // Set Semaphore NewAngleData
   
+}
+
+
+void Bluetooth_Read_Stear_Angle_Value(){
 }
 
 //------------LaunchPad__Output------------
@@ -371,10 +406,29 @@ void Bluetooth_Write_Speed_Motor_Value(){  // write angle
 //	}
 //	SpeedWheels = Speed;
 	
-	SpeedWheels = CharacteristicList[2].pt[0];
-  OS_Signal(&NewBluetoothSpeedData);  // Set Semaphore NewSpeedData
+
+		if (DirectionWheels==0)
+		{
+			DCforward(SpeedWheels , 0);  //between(0..250)  Forward Direction
+			//int a = 1;
+		} 
+		else
+		{
+			 //int a = 0;
+			DCbackward(SpeedWheels , 0);  //between(0..250)  Backward Direction
+		}
+	
+	
+//	
+//	SpeedWheels = CharacteristicList[2].pt[0];
+//  OS_Signal(&NewBluetoothSpeedData);  // Set Semaphore NewSpeedData
 
 }
+
+
+void Bluetooth_Read_Speed_Motor_Value(){
+}
+
 
 //------------LaunchPad__Output------------
 // Set new value of Motor Direction from bluetooth client to launchpad
@@ -384,10 +438,17 @@ void Bluetooth_Write_Speed_Motor_Value(){  // write angle
 void Bluetooth_Write_Wheel_Direction_Value(){
 	
 	// Change direction only if motor is stopped
-	if (SpeedWheels==0){
-		DirectionWheels = CharacteristicList[0].pt[0];
-	}
+//	if (SpeedWheels==0){
+//		DirectionWheels = CharacteristicList[0].pt[0];
+//	}
 }
+
+void Bluetooth_Reed_Wheel_Direction_Value(){
+	
+}
+
+
+
 
 //------------LaunchPad__Output------------
 // Set new value of Buzzer Valume from bluetooth client to launchpad
@@ -409,6 +470,9 @@ void Bluetooth_Write_Buzzer_Value(){  // write angle
 }
 
 
+void Bluetooth_Read_Buzzer_Value(){
+}
+
 //------------LaunchPad__Output------------
 // Set new value of Temp&Humidity from bluetooth client to launchpad
 // Data from UART are Little Endian
@@ -422,6 +486,34 @@ void Bluetooth_Write_TempHumidity_Value(){  // write temp , humidity
 }
 
 
+//------------LaunchPad__Output------------
+// Read new value of Temp&Humidity from bluetooth client to launchpad
+// Data from UART are Little Endian
+// Input: 
+// Output: none
+void Bluetooth_Read_TempHumidity_Value(){  // write temp , humidity
+
+	
+/// Thread will send periodically the notification if CCCD is activated	. No need
+
+}
+//------------LaunchPad__Output------------
+// Set new value of Magnetometer from bluetooth client to launchpad
+// Data from UART are Little Endian
+// Input: 
+// Output: none
+void Bluetooth_Write_Magnet_Value(){  
+	
+}
+
+//------------LaunchPad__Output------------
+// Read new value of Magnetometer from bluetooth client to launchpad
+// Data from UART are Little Endian
+// Input: 
+// Output: none
+void Bluetooth_Read_Magnet_Value(){  
+	
+}
 
 extern uint16_t edXNum; // actual variable within TExaS
 void Bluetooth_Init(void){volatile int r;
@@ -433,14 +525,17 @@ void Bluetooth_Init(void){volatile int r;
   GetVersion(); // optional
   AddService(0xFFE0); 
 	
-	AddCharacteristic(0xFFE1,1,&DirectionWheels,0x03,0x0A,"Direction",0,&Bluetooth_Write_Wheel_Direction_Value);   //  write current direction value, 1 byte
-	AddCharacteristic(0xFFE2,1,&AngleWheels,0x03,0x0A,"Angle",0,&Bluetooth_Write_Stear_Angle_Value);   //  write current Angle value, 1 byte
-	AddCharacteristic(0xFFE3,1,&SpeedWheels,0x03,0x0A,"Speed",0,&Bluetooth_Write_Speed_Motor_Value);   //  write current Speed value, 1 bytes
-	AddCharacteristic(0xFFE4,1,&BuzzerVolume,0x03,0x0A,"Buzzer",0,&Bluetooth_Write_Buzzer_Value);   //  write current Speed value, 1 bytes
+	AddCharacteristic(0xFFE1,1,&DirectionWheels,0x03,0x0A,"Direction",&Bluetooth_Reed_Wheel_Direction_Value,&Bluetooth_Write_Wheel_Direction_Value);   //  write current direction value, 1 byte
+	AddCharacteristic(0xFFE2,1,&AngleWheels,0x03,0x0A,"Angle",&Bluetooth_Read_Stear_Angle_Value,&Bluetooth_Write_Stear_Angle_Value);   //  write current Angle value, 1 byte
+	AddCharacteristic(0xFFE3,1,&SpeedWheels,0x03,0x0A,"Speed",&Bluetooth_Read_Speed_Motor_Value,&Bluetooth_Write_Speed_Motor_Value);   //  write current Speed value, 1 bytes
+	AddCharacteristic(0xFFE4,1,&BuzzerVolume,0x03,0x0A,"Buzzer",&Bluetooth_Read_Buzzer_Value,&Bluetooth_Write_Buzzer_Value);   //  write current Speed value, 1 bytes
+	
+	AddCharacteristic(0xFFE5,6,&tempHumidityData[0],0x03,0x0A,"TempHumidity",&Bluetooth_Read_TempHumidity_Value,&Bluetooth_Write_TempHumidity_Value);   //  write current Speed value, 1 bytes
+	AddCharacteristic(0xFFE6,6,&magnetometerData[0],0x03,0x0A,"Magnetometer",&Bluetooth_Read_Magnet_Value,&Bluetooth_Write_Magnet_Value);   //  write current Speed value, 1 bytes
 	
 
-	AddNotifyCharacteristic(0xFFE5,6,&tempHumidityData[0],"TempHumidity",&Bluetooth_Write_TempHumidity_Value);
-	
+//	AddNotifyCharacteristic(0xFFE5,6,&tempHumidityData[0],"TempHumidity",&Bluetooth_Write_TempHumidity_Value);
+//	AddNotifyCharacteristic(0xFFE6,6,&magnetometerData[0],"Magnetometer",&Bluetooth_Write_Magnet_Value);
 	
   RegisterService();
   StartAdvertisement();
@@ -451,16 +546,18 @@ void Bluetooth_Init(void){volatile int r;
 
 
 int main(void){
-	//PLL_Init();                      // bus clock at 80 MHz
-	// Port change
-	//GPIO_DC_Init();	//  initialize pins for forward and backward dierction
+	PLL_Init();                      // bus clock at 80 MHz
 	
+	AD_Init();  // initilize AD converter
+
+	GPIO_DC_Init();	//  initialize pins for forward and backward dierction
+
   OS_Init();
-  Profile_Init();  // initialize the 7 hardware profiling pins
+  //Profile_Init();  // initialize the 7 hardware profiling ,   pins can conflict, check
  
   //OS_InitSemaphore(&TakeJoystickData,0);   // 0 means no data
   OS_InitSemaphore(&NewBluetoothSpeedData, 0);  // 0 means no data
-	OS_InitSemaphore(&NewBluetoothAngleData, 0);  // 0 means no data
+	//OS_InitSemaphore(&NewBluetoothAngleData, 0);  // 0 means no data
 	OS_InitSemaphore(&AnglePositionChanged, 0);  // 0 means no data
 	//OS_InitSemaphore(&NewBluetoothBuzzerData, 0);  // 0 means no data
 	OS_InitSemaphore(&NewTempHumidityData, 0);  // 0 means no data
@@ -473,14 +570,14 @@ int main(void){
 	//BSP_Joystick_Init();
 	
 	// Input:  Period(Takts), DutyCicle(Takts)
-	// initialize PWM1_1A, 5 Takt in 1 mikros * 2500 mikros , Servo steering  
+	// initialize PWM0_3_A, 5 Takt in 1 mikros * 2500 mikros , Servo steering  
 	//   Port change
-	//PWM1_1_A_Init((5*PERIOD_SERVO), (5*POSITION_NULL));   // PA6       
+	PWM0_3_A_Init((5*PERIOD_SERVO), (5*POSITION_NULL));   // PC4       
 	
 	
 	// Input:  Period(Takts), DutyCicle(Takts)
-	// initialize PWM0_3A, 20 KHz Period, DC Motor Control, 5 Takt in 1 mikros * 250 mikros = 20kHZ, Servo steering  
-	//PWM0_3_A_Init(PERIOD_DC, SPEED_NULL);       // PD0   Change to another PWM   
+	// initialize PWM0_1_A, 20 KHz Period, DC Motor Control, 5 Takt in 1 mikros * 250 mikros = 20kHZ, Servo steering  
+	PWM0_1_A_Init(PERIOD_DC, SPEED_NULL);       // PC5   
 	
 	// Input:  Period(Takts), DutyCicle(Takts)
 	// initialize PWM0_0A, 3 KHz Period, Buzzer , 50% volume
