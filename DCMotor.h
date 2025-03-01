@@ -3,7 +3,7 @@
 #include "BSP.h"
 
 
-#define PERIOD_DC 250  //   , 5 * 50 mikrosec  =  20KHZ
+#define PERIOD_DC 1600  //   , 80 * 50 mikrosec  =  20KHZ (80 takts per 1 mikro second)
 #define SPEED_NULL 1  // 1 for Initialisation  
 
 // ------------Control the Period of PWM for DC Motor------------

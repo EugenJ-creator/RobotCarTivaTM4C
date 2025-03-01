@@ -5,3 +5,5 @@
 .\objects\dcmotor.o: PWM.h
 .\objects\dcmotor.o: ../inc/tm4c123gh6pm.h
 .\objects\dcmotor.o: ../inc/GPIO.h
+.\objects\dcmotor.o: DCMotor.h
+.\objects\dcmotor.o: ../inc/BSP.h

@@ -80,58 +80,58 @@ void PWM0_0_B_Deactivate(void){
 
 
 
-//------------------------------------------------------------------------------------------------------------------------------------
-//---------------BSP-  Stearing with Servo TC8120MG TCC Init Pins 
-// period is 16-bit number of PWM clock cycles in one period (3<=period)
-// duty is number of PWM clock cycles output is high  (2<=duty<=period-1)
-// PWM clock rate = processor clock rate/SYSCTL_RCC_PWMDIV
-//                = BusClock/16 
-//                = 80 MHz/16 = 5 MHz (in this example)
+////------------------------------------------------------------------------------------------------------------------------------------
+////---------------BSP-  DC Motor
+//// period is 16-bit number of PWM clock cycles in one period (3<=period)
+//// duty is number of PWM clock cycles output is high  (2<=duty<=period-1)
+//// PWM clock rate = processor clock rate/SYSCTL_RCC_PWMDIV
+////                = BusClock/16 
+////                = 80 MHz/16 = 5 MHz (in this example)
 
-// Output on PB4/M0PWM2
+//// Output on PB4/M0PWM2
 
-void PWM0_1_A_Init(uint16_t period, uint16_t duty){
-  volatile unsigned long delay;
-  SYSCTL_RCGCPWM_R |= 0x01;             // 1) activate PWM0
-  SYSCTL_RCGCGPIO_R |= 0x02;            // 2) activate port B
-  delay = SYSCTL_RCGCGPIO_R;            // allow time to finish activating
-  GPIO_PORTB_AFSEL_R |= 0x10;           // enable alt funct on PB4
-  GPIO_PORTB_PCTL_R &= ~0x000F0000;     // configure PB4 as M0PWM2
-  GPIO_PORTB_PCTL_R |=  0x00040000;
-  GPIO_PORTB_AMSEL_R &= ~0x10;          // disable analog functionality on PB4
-  GPIO_PORTB_DEN_R |= 0x10;             // enable digital I/O on PB4
-  SYSCTL_RCC_R |= SYSCTL_RCC_USEPWMDIV; // 3) use PWM divider
-  SYSCTL_RCC_R &= ~SYSCTL_RCC_PWMDIV_M; //    clear PWM divider field
-  SYSCTL_RCC_R += SYSCTL_RCC_PWMDIV_16;  //    configure for /16 divider
-  PWM0_1_CTL_R = 0;                     // 4) re-loading down-counting mode
-  PWM0_1_GENA_R = (PWM_1_GENA_ACTCMPAD_ONE|PWM_1_GENA_ACTLOAD_ZERO);
-  // PB4 goes low on LOAD
-  // PB4 goes high on CMPB down
-  PWM0_1_LOAD_R = period - 1;           // 5) cycles needed to count down to 0
-  PWM0_1_CMPA_R = duty - 1;             // 6) count value when output rises
-  PWM0_1_CTL_R |= 0x00000001;           // 7) start PWM0
-	PWM0_ENABLE_R &= (~0x00000004);          // disable PB4/M0PWM2
-  //PWM0_ENABLE_R |= 0x00000004;          // enable PB4/M0PWM2
-}
-// change duty cycle of PB4
-// duty is number of PWM clock cycles output is high  (2<=duty<=period-1)
-void PWM0_1_A_Duty(uint16_t duty){
-  PWM0_1_CMPA_R = duty - 1;             // 6) count value when output rises
-}
+//void PWM0_1_A_Init(uint16_t period, uint16_t duty){
+//  volatile unsigned long delay;
+//  SYSCTL_RCGCPWM_R |= 0x01;             // 1) activate PWM0
+//  SYSCTL_RCGCGPIO_R |= 0x02;            // 2) activate port B
+//  delay = SYSCTL_RCGCGPIO_R;            // allow time to finish activating
+//  GPIO_PORTB_AFSEL_R |= 0x10;           // enable alt funct on PB4
+//  GPIO_PORTB_PCTL_R &= ~0x000F0000;     // configure PB4 as M0PWM2
+//  GPIO_PORTB_PCTL_R |=  0x00040000;
+//  GPIO_PORTB_AMSEL_R &= ~0x10;          // disable analog functionality on PB4
+//  GPIO_PORTB_DEN_R |= 0x10;             // enable digital I/O on PB4
+//  SYSCTL_RCC_R |= SYSCTL_RCC_USEPWMDIV; // 3) use PWM divider
+//  SYSCTL_RCC_R &= ~SYSCTL_RCC_PWMDIV_M; //    clear PWM divider field
+//  SYSCTL_RCC_R += SYSCTL_RCC_PWMDIV_16;  //    configure for /16 divider
+//  PWM0_1_CTL_R = 0;                     // 4) re-loading down-counting mode
+//  PWM0_1_GENA_R = (PWM_1_GENA_ACTCMPAD_ONE|PWM_1_GENA_ACTLOAD_ZERO);
+//  // PB4 goes low on LOAD
+//  // PB4 goes high on CMPB down
+//  PWM0_1_LOAD_R = period - 1;           // 5) cycles needed to count down to 0
+//  PWM0_1_CMPA_R = duty - 1;             // 6) count value when output rises
+//  PWM0_1_CTL_R |= 0x00000001;           // 7) start PWM0
+//	PWM0_ENABLE_R &= (~0x00000004);          // disable PB4/M0PWM2
+//  //PWM0_ENABLE_R |= 0x00000004;          // enable PB4/M0PWM2
+//}
+//// change duty cycle of PB4
+//// duty is number of PWM clock cycles output is high  (2<=duty<=period-1)
+//void PWM0_1_A_Duty(uint16_t duty){
+//  PWM0_1_CMPA_R = duty - 1;             // 6) count value when output rises
+//}
 
-void PWM0_1_A_enable(void){
-  PWM0_ENABLE_R |= 0x00000004;          // enable PB4/M0PWM2
-}
+//void PWM0_1_A_enable(void){
+//  PWM0_ENABLE_R |= 0x00000004;          // enable PB4/M0PWM2
+//}
 
-void PWM0_1_A_disable(void){
-  PWM0_ENABLE_R &= (~0x00000004);          // disable PB4/M0PWM2
-}
+//void PWM0_1_A_disable(void){
+//  PWM0_ENABLE_R &= (~0x00000004);          // disable PB4/M0PWM2
+//}
 
-// deactivate PB4/M0PWM2
-void PWM0_1_A_Deactivate(void){   
-	PWM0_1_CTL_R &= ~(1<<0) ;                     //  disable Generator
-  PWM0_ENABLE_R &= (~0x00000004);          // disable PB4/M0PWM2
-}
+//// deactivate PB4/M0PWM2
+//void PWM0_1_A_Deactivate(void){   
+//	PWM0_1_CTL_R &= ~(1<<0) ;                     //  disable Generator
+//  PWM0_ENABLE_R &= (~0x00000004);          // disable PB4/M0PWM2
+//}
 
 
 //------------------------------------------------------------------------------------------
@@ -201,7 +201,47 @@ void PWM0_3_A_Deactivate(void){
 }
 
 
+// Output on PB4/M0PWM2
 
+void TIMER_1_A_PWM_Init(uint16_t period, uint16_t duty){
+  volatile unsigned long delay;
+	
+	SYSCTL_RCGCTIMER_R |= 0x02;      // activate timer1
+  SYSCTL_RCGCGPIO_R |= 0x0002;     // activate port B
+  while((SYSCTL_PRGPIO_R&0x0002) == 0){};// ready?
+	GPIO_PORTB_AFSEL_R |= 0x10;           // enable alt funct on PB4	
+  GPIO_PORTB_DEN_R |= 0x10;             // enable digital I/O on PB4
+																			// configure PB4 as T1CCP0
+  GPIO_PORTB_PCTL_R = (GPIO_PORTB_PCTL_R&0xFFF0FFFF)+0x00070000;
+  GPIO_PORTB_AMSEL_R &= ~0x10;          // disable analog functionality on PB4
+	//GPIO_PORTB_DR4R_R	|= 0x10;           // Output Pad 4-mA Drive Enable
+  TIMER1_CTL_R &= ~TIMER_CTL_TAEN; // disable timer1A during setup
+  TIMER1_CFG_R = TIMER_CFG_16_BIT; // configure for 16-bit timer mode
+                                   // configure for alternate (PWM) mode
+  TIMER1_TAMR_R = (TIMER_TAMR_TAAMS|TIMER_TAMR_TAMR_PERIOD);
+  TIMER1_TAILR_R = period-1;       // timer start value
+  TIMER1_TAMATCHR_R = period-duty-1; // duty cycle = high/period
+  //TIMER1_CTL_R |= TIMER_CTL_TAEN;  // enable timer1A 16-b, PWM	
+}
+// change duty cycle of PB4
+// duty is number of PWM clock cycles output is high  (2<=duty<=period-1)
+void TIMER_1_A_PWM_Duty(uint16_t duty){
+  TIMER1_TAMATCHR_R = TIMER1_TAILR_R-duty; // duty cycle = high/period
+}
+
+void TIMER_1_A_PWM_enable(void){
+  TIMER1_CTL_R |= TIMER_CTL_TAEN;          // enable PB4 PWM
+}
+
+void TIMER_1_A_PWM_disable(void){
+  TIMER1_CTL_R &= ~TIMER_CTL_TAEN;          // disable PB4 PWM
+}
+
+// deactivate PB4/PWM
+void TIMER_1_A_PWM_Deactivate(void){   
+	
+  TIMER1_CTL_R &= ~TIMER_CTL_TAEN;          // disable PB4/PWM
+}
 
 
 

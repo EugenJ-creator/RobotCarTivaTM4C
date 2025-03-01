@@ -6,6 +6,7 @@
 ".\objects\robotcar.o"
 ".\objects\math.o"
 ".\objects\pll.o"
+".\objects\pid_ctrl.o"
 ".\texas.o"
 ".\objects\servotd8120mg.o"
 ".\objects\dcmotor.o"

@@ -93,9 +93,13 @@ uint8_t tempHumidityData[6];  // Data Array for bluetooth notification
 //int16_t magnetometerData[3];  // x, y, z   little indian
 uint8_t magnetometerData[6];  // x, y, z   little indian
 int16_t magnetometerData2[3];  // x, y, z   little indian
+uint8_t speedPhotoData[3];   // Sensor Speed data
+
+uint32_t ControlledSpeed = 1;  // Flag,  if speed is in tempomat modus
 
 
 extern uint32_t lightIntensity;   //   Light intensity , Measured all 10 HZ
+extern uint32_t Period ;              // (1/clock) units
 uint32_t lastLightIntensity = 70; // Last measured intenity
 
 // semaphores
@@ -199,6 +203,8 @@ void Task0(void){
 void Task1(void){
 
   while(1){
+		
+		uint32_t periodVelocity = Period;
 		// Toggle PE2
 		//Profile_Toggle1();
 		
@@ -391,44 +397,81 @@ void Bluetooth_Write_Stear_Angle_Value(){  // write angle
 void Bluetooth_Read_Stear_Angle_Value(){
 }
 
+////------------LaunchPad__Output------------
+//// Set new value of Motor Speed from bluetooth client to launchpad
+//// Data from UART are Little Endian
+//// Input: 
+//// Output: none
+//void Bluetooth_Write_Speed_Motor_Value(){  // write angle
+
+////	uint32_t Speed=0;
+////	
+////	for (int i=0;i<4;i++){
+////		Speed= Speed<<8;
+////		Speed|= CharacteristicList[5].pt[i];
+////	}
+////	SpeedWheels = Speed;
+//	
+
+//		if (DirectionWheels==0)
+//		{
+//			DCforward(SpeedWheels , 0);  //between(0..250)  Forward Direction
+//			//int a = 1;
+//		} 
+//		else
+//		{
+//			 //int a = 0;
+//			DCbackward(SpeedWheels , 0);  //between(0..250)  Backward Direction
+//		}
+//	
+//	
+////	
+////	SpeedWheels = CharacteristicList[2].pt[0];
+////  OS_Signal(&NewBluetoothSpeedData);  // Set Semaphore NewSpeedData
+
+//}
+
+
+
 //------------LaunchPad__Output------------
 // Set new value of Motor Speed from bluetooth client to launchpad
 // Data from UART are Little Endian
 // Input: 
 // Output: none
-void Bluetooth_Write_Speed_Motor_Value(){  // write angle
-
-//	uint32_t Speed=0;
-//	
-//	for (int i=0;i<4;i++){
-//		Speed= Speed<<8;
-//		Speed|= CharacteristicList[5].pt[i];
-//	}
-//	SpeedWheels = Speed;
-	
-
-		if (DirectionWheels==0)
-		{
-			DCforward(SpeedWheels , 0);  //between(0..250)  Forward Direction
-			//int a = 1;
-		} 
-		else
-		{
-			 //int a = 0;
-			DCbackward(SpeedWheels , 0);  //between(0..250)  Backward Direction
+void Bluetooth_Write_Speed_Forward_Motor_Value(){  // write angle
+		if (!ControlledSpeed) {
+			DCforward(SpeedWheels *6 , 0);  //between(0..250)* 16  for range (0..4000)  Forward Direction
+		} else {
+			setDesiredSpeed(SpeedWheels, 0);
 		}
-	
-	
-//	
-//	SpeedWheels = CharacteristicList[2].pt[0];
-//  OS_Signal(&NewBluetoothSpeedData);  // Set Semaphore NewSpeedData
-
 }
 
 
-void Bluetooth_Read_Speed_Motor_Value(){
+
+
+//------------LaunchPad__Output------------
+// Set new value of Motor Speed from bluetooth client to launchpad
+// Data from UART are Little Endian
+// Input: 
+// Output: none
+void Bluetooth_Write_Speed_Backward_Motor_Value(){  // write angle
+    if (!ControlledSpeed) {
+			DCbackward(SpeedWheels *6 , 0);  //between(0..250)* 16  for range (0..4000)  Backward Direction
+		} else {
+			setDesiredSpeed(SpeedWheels, 1);
+		}
+
 }
 
+//void Bluetooth_Read_Speed_Motor_Value(){
+//}
+
+
+void Bluetooth_Read_Speed_Forward_Motor_Value(){
+}
+
+void Bluetooth_Read_Speed_Backward_Motor_Value(){
+}
 
 //------------LaunchPad__Output------------
 // Set new value of Motor Direction from bluetooth client to launchpad
@@ -505,6 +548,28 @@ void Bluetooth_Read_TempHumidity_Value(){  // write temp , humidity
 void Bluetooth_Write_Magnet_Value(){  
 	
 }
+//------------LaunchPad__Output------------
+
+// Data from UART are Little Endian
+// Input: 
+// Output: none
+void Bluetooth_Read_SpeedSensor_Value(){
+	
+	speedPhotoData[2] =  Period >> 16 & 0xFF;
+	speedPhotoData[1] =  Period >> 8 & 0xFF;
+	speedPhotoData[0] =  Period  & 0xFF;
+
+}
+
+//------------LaunchPad__Output------------
+// Set new value of Sensor Speed from bluetooth client to launchpad
+// Data from UART are Little Endian
+// Input: 
+// Output: none
+void Bluetooth_Write_SpeedSensor_Value(){
+	
+}
+
 
 //------------LaunchPad__Output------------
 // Read new value of Magnetometer from bluetooth client to launchpad
@@ -525,14 +590,16 @@ void Bluetooth_Init(void){volatile int r;
   GetVersion(); // optional
   AddService(0xFFE0); 
 	
-	AddCharacteristic(0xFFE1,1,&DirectionWheels,0x03,0x0A,"Direction",&Bluetooth_Reed_Wheel_Direction_Value,&Bluetooth_Write_Wheel_Direction_Value);   //  write current direction value, 1 byte
-	AddCharacteristic(0xFFE2,1,&AngleWheels,0x03,0x0A,"Angle",&Bluetooth_Read_Stear_Angle_Value,&Bluetooth_Write_Stear_Angle_Value);   //  write current Angle value, 1 byte
-	AddCharacteristic(0xFFE3,1,&SpeedWheels,0x03,0x0A,"Speed",&Bluetooth_Read_Speed_Motor_Value,&Bluetooth_Write_Speed_Motor_Value);   //  write current Speed value, 1 bytes
+	//AddCharacteristic(0xFFE1,1,&DirectionWheels,0x03,0x0A,"Direction",&Bluetooth_Reed_Wheel_Direction_Value,&Bluetooth_Write_Wheel_Direction_Value);   //  write current direction value, 1 byte
+	AddCharacteristic(0xFFE1,1,&AngleWheels,0x03,0x0A,"Angle",&Bluetooth_Read_Stear_Angle_Value,&Bluetooth_Write_Stear_Angle_Value);   //  write current Angle value, 1 byte
+	AddCharacteristic(0xFFE2,1,&SpeedWheels,0x03,0x0A,"SpeedFoward",&Bluetooth_Read_Speed_Forward_Motor_Value,&Bluetooth_Write_Speed_Forward_Motor_Value);   //  write current Speed value, 1 bytes
+	AddCharacteristic(0xFFE3,1,&SpeedWheels,0x03,0x0A,"SpeedBackward",&Bluetooth_Read_Speed_Backward_Motor_Value,&Bluetooth_Write_Speed_Backward_Motor_Value);   //  write current Speed value, 1 bytes
 	AddCharacteristic(0xFFE4,1,&BuzzerVolume,0x03,0x0A,"Buzzer",&Bluetooth_Read_Buzzer_Value,&Bluetooth_Write_Buzzer_Value);   //  write current Speed value, 1 bytes
 	
 	AddCharacteristic(0xFFE5,6,&tempHumidityData[0],0x03,0x0A,"TempHumidity",&Bluetooth_Read_TempHumidity_Value,&Bluetooth_Write_TempHumidity_Value);   //  write current Speed value, 1 bytes
 	AddCharacteristic(0xFFE6,6,&magnetometerData[0],0x03,0x0A,"Magnetometer",&Bluetooth_Read_Magnet_Value,&Bluetooth_Write_Magnet_Value);   //  write current Speed value, 1 bytes
 	
+	AddCharacteristic(0xFFE7,3,&speedPhotoData[0],0x03,0x0A,"SpeedPhotoSensor",&Bluetooth_Read_SpeedSensor_Value,&Bluetooth_Write_SpeedSensor_Value);   //  write current Speed value, 1 bytes
 
 //	AddNotifyCharacteristic(0xFFE5,6,&tempHumidityData[0],"TempHumidity",&Bluetooth_Write_TempHumidity_Value);
 //	AddNotifyCharacteristic(0xFFE6,6,&magnetometerData[0],"Magnetometer",&Bluetooth_Write_Magnet_Value);
@@ -576,8 +643,12 @@ int main(void){
 	
 	
 	// Input:  Period(Takts), DutyCicle(Takts)
-	// initialize PWM0_1_A, 20 KHz Period, DC Motor Control, 5 Takt in 1 mikros * 250 mikros = 20kHZ, Servo steering  
-	PWM0_1_A_Init(PERIOD_DC, SPEED_NULL);       // PC5   
+//	// initialize PWM0_1_A, 20 KHz Period, DC Motor Control, 5 Takt in 1 mikros * 250 mikros = 20kHZ
+//	PWM0_1_A_Init(250, 1);       // PB4   
+	
+	
+	// Initialize TIMER 1A for PWM, 20 KHz Period, DC Motor Control, 80 Takt in 1 mikros *  20 microsec (period 50 khz)  = 1600
+	TIMER_1_A_PWM_Init(PERIOD_DC, SPEED_NULL);
 	
 	// Input:  Period(Takts), DutyCicle(Takts)
 	// initialize PWM0_0A, 3 KHz Period, Buzzer , 50% volume
@@ -586,6 +657,10 @@ int main(void){
 	
 	UART0_Init();     //  will affect PWM0_0_A
 	Bluetooth_Init();
+	
+	Timer3_Init(4000000); // initialize timer3 (20 Hz, 50ms)
+	PeriodMeasure_Init();  // Initialize Edge triggered capture mode interrupt
+	EnableInterrupts();
 	
 	I2C3_Init(); // Init I2C Module3 for Temp Humidity Sensor
 	I2C1_Init(); // Init I2C Module1 for Gyroskop Accel magnetometer Sensor
