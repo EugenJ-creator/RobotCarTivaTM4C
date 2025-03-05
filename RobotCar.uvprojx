@@ -519,16 +519,6 @@
               <FilePath>.\PWM.c</FilePath>
             </File>
             <File>
-              <FileName>GPIO.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\inc\GPIO.h</FilePath>
-            </File>
-            <File>
-              <FileName>GPIO.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\inc\GPIO.c</FilePath>
-            </File>
-            <File>
               <FileName>I2C3.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\I2C3.c</FilePath>
@@ -557,6 +547,11 @@
               <FileName>ADCT0.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\ADCT0.h</FilePath>
+            </File>
+            <File>
+              <FileName>GPIO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\GPIO.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -602,11 +597,6 @@
               <FileName>LightSensor.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\LightSensor.h</FilePath>
-            </File>
-            <File>
-              <FileName>BoardLed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\BoardLed.c</FilePath>
             </File>
           </Files>
         </Group>

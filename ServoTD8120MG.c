@@ -32,18 +32,33 @@ void Angle(uint32_t degree){
 
 
 
-			if (degree>90)
+			if (degree>50)
 			{
-				Duty = (((degree-90) * 420)/90)+1340;
+				Duty = (((degree-50) * 405)/50)+1145;
 			} 
-			else if (degree<90)
+			else if (degree<50)
 			{
-				Duty = ((degree * 460)/90)+890;
+				Duty = ((degree * 305)/50)+840;
 			}
-			else if (degree==90)
+			else if (degree==50)
 			{
-				Duty = 1340;
+				Duty = 1145;
 			}
+			
+			
+//						if (degree>90)
+//			{
+//				Duty = (((degree-90) * 420)/90)+1340;
+//			} 
+//			else if (degree<90)
+//			{
+//				Duty = ((degree * 460)/90)+860;
+//			}
+//			else if (degree==90)
+//			{
+//				Duty = 1340;
+//			}
+			
 			
 		
 			PWM0_3_A_disable();

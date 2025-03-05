@@ -17,7 +17,7 @@
 .\objects\robotcar.o: ../inc/AP.h
 .\objects\robotcar.o: AP_Services.h
 .\objects\robotcar.o: PLL.h
-.\objects\robotcar.o: ../inc/GPIO.h
+.\objects\robotcar.o: GPIO.h
 .\objects\robotcar.o: Buzzer.h
 .\objects\robotcar.o: PWM.h
 .\objects\robotcar.o: I2C3.h

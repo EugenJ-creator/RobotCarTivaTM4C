@@ -55,7 +55,7 @@
 #include "../inc/UART1.h"
 #include "../inc/AP.h"
 #include "../inc/tm4c123gh6pm.h"
-#include "../inc/GPIO.h"
+#include "GPIO.h"
 
 
 const uint32_t RECVSIZE=128;
@@ -744,6 +744,7 @@ void AP_BackgroundProcess(void){
       OutString("\n\rRecvMessage");
       AP_EchoReceived(APOK);        
       if((RecvBuf[3]==0x55)&&(RecvBuf[4]==0x88)){// SNP Characteristic Write Indication (0x88)
+				ledToggleBlue();
         h = (RecvBuf[8]<<8)+RecvBuf[7]; // handle for this characteristic
         responseNeeded = RecvBuf[9];
 				// process possible write indication
@@ -772,6 +773,7 @@ void AP_BackgroundProcess(void){
         }
       }
       if((RecvBuf[3]==0x55)&&(RecvBuf[4]==0x87)){// SNP Characteristic Read Indication (0x87)
+				ledToggleRed();
         h = (RecvBuf[8]<<8)+RecvBuf[7]; // handle for this characteristic
         i = 0;
         while(i<MAXCHARACTERISTICS){

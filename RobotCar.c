@@ -89,13 +89,14 @@ uint32_t DirectionWheels = 0;    // 0-Forward/1-back
 uint32_t AngleWheels;    // 0...180
 //uint32_t SpeedAngleWheels;    // 0..9 Sensitivity
 uint32_t BuzzerVolume;  // 0...1600
+uint32_t selectedOptions; // 8 bit   0 bit - tempomat, ...
 uint8_t tempHumidityData[6];  // Data Array for bluetooth notification
 //int16_t magnetometerData[3];  // x, y, z   little indian
 uint8_t magnetometerData[6];  // x, y, z   little indian
 int16_t magnetometerData2[3];  // x, y, z   little indian
 uint8_t speedPhotoData[3];   // Sensor Speed data
 
-uint32_t ControlledSpeed = 1;  // Flag,  if speed is in tempomat modus
+uint32_t ControlledSpeed = 0;  // Flag,  if speed is in tempomat modus
 
 
 extern uint32_t lightIntensity;   //   Light intensity , Measured all 10 HZ
@@ -173,17 +174,17 @@ void Task0(void){
 		AP_BackgroundProcess();
 		
 		
-		if (SendTempHumidityFlag){
-			if (AP_SendNotification(0)){   // Send data for 0 Characteristic , Temp&Humidity
-				SendTempHumidityFlag = 0;
-			}
-		}
+//		if (SendTempHumidityFlag){
+//			if (AP_SendNotification(0)){   // Send data for 0 Characteristic , Temp&Humidity
+//				SendTempHumidityFlag = 0;
+//			}
+//		}
 		
-		if (SendMagnetometerFlag){
-			if (AP_SendNotification(1)){   // Send data for 1 Characteristic , Magnetometer
-				SendMagnetometerFlag = 0;
-			}
-		}
+//		if (SendMagnetometerFlag){
+//			if (AP_SendNotification(1)){   // Send data for 1 Characteristic , Magnetometer
+//				SendMagnetometerFlag = 0;
+//			}
+//		}
 
 
 		WaitForInterrupt();
@@ -473,6 +474,16 @@ void Bluetooth_Read_Speed_Forward_Motor_Value(){
 void Bluetooth_Read_Speed_Backward_Motor_Value(){
 }
 
+
+void Bluetooth_Read_Options_Value(){
+}
+
+void Bluetooth_Write_Options_Value(){
+	ControlledSpeed = selectedOptions&0x1;
+}
+
+
+
 //------------LaunchPad__Output------------
 // Set new value of Motor Direction from bluetooth client to launchpad
 // Data from UART are Little Endian
@@ -600,7 +611,7 @@ void Bluetooth_Init(void){volatile int r;
 	AddCharacteristic(0xFFE6,6,&magnetometerData[0],0x03,0x0A,"Magnetometer",&Bluetooth_Read_Magnet_Value,&Bluetooth_Write_Magnet_Value);   //  write current Speed value, 1 bytes
 	
 	AddCharacteristic(0xFFE7,3,&speedPhotoData[0],0x03,0x0A,"SpeedPhotoSensor",&Bluetooth_Read_SpeedSensor_Value,&Bluetooth_Write_SpeedSensor_Value);   //  write current Speed value, 1 bytes
-
+	AddCharacteristic(0xFFE8,1,&selectedOptions,0x03,0x0A,"SelectedFunctions",&Bluetooth_Read_Options_Value,&Bluetooth_Write_Options_Value);   //  write options, 1 bytes
 //	AddNotifyCharacteristic(0xFFE5,6,&tempHumidityData[0],"TempHumidity",&Bluetooth_Write_TempHumidity_Value);
 //	AddNotifyCharacteristic(0xFFE6,6,&magnetometerData[0],"Magnetometer",&Bluetooth_Write_Magnet_Value);
 	
@@ -609,6 +620,7 @@ void Bluetooth_Init(void){volatile int r;
   GetStatus();
   //DisableInterrupts(); // optional
 }
+
 
 
 
@@ -668,6 +680,9 @@ int main(void){
 	if (Init_MPU9250() == 1){   //Initialize Magnetometer 
 		// Notify user:  for example with Led:    Initialization of magnetometer couldn't be done
 	}
+	
+	PortF_2_init();  // Initialize port F2   , Led on board 
+	PortF_1_init();  // Initialize port F2   , Led on board 
 	
 	//OS_PeriodTrigger0_Init(&TakeJoystickData,5000);  // every 5000 ms ,  Set flag with some period for one thread. This is explicitely for one thread, period time can be less then 1HZ.  For example 5 times pro second
 	//OS_PeriodTrigger0_Init(&TakeJoystickData,1);  // every 1 ms ,  Set flag with some period. This is explicitely for one thread
