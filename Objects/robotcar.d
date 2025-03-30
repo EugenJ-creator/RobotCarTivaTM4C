@@ -17,7 +17,7 @@
 .\objects\robotcar.o: ../inc/AP.h
 .\objects\robotcar.o: AP_Services.h
 .\objects\robotcar.o: PLL.h
-.\objects\robotcar.o: GPIO.h
+.\objects\robotcar.o: GPIO_DIF.h
 .\objects\robotcar.o: Buzzer.h
 .\objects\robotcar.o: PWM.h
 .\objects\robotcar.o: I2C3.h
@@ -26,4 +26,7 @@
 .\objects\robotcar.o: I2C3.h
 .\objects\robotcar.o: GyroAccelMag.h
 .\objects\robotcar.o: LightSensor.h
+.\objects\robotcar.o: RobotCar.h
 .\objects\robotcar.o: ADCT0.h
+.\objects\robotcar.o: CanTransmitReceive.h
+.\objects\robotcar.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

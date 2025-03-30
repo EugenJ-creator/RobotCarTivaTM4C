@@ -26,7 +26,7 @@
 
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
-#include "GPIO.h"
+#include "GPIO_DIF.h"
 #include "pid_ctrl.h"
 #include "DCMotor.h"
 

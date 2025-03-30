@@ -5,4 +5,4 @@
 .\objects\ap.o: ../inc/UART0.h
 .\objects\ap.o: ../inc/UART1.h
 .\objects\ap.o: ../inc/AP.h
-.\objects\ap.o: GPIO.h
+.\objects\ap.o: GPIO_DIF.h

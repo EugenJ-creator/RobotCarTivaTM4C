@@ -549,9 +549,9 @@
               <FilePath>.\ADCT0.h</FilePath>
             </File>
             <File>
-              <FileName>GPIO.c</FileName>
+              <FileName>GPIO_DIF.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\GPIO.c</FilePath>
+              <FilePath>.\GPIO_DIF.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -597,6 +597,51 @@
               <FileName>LightSensor.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\LightSensor.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>CAN</GroupName>
+          <Files>
+            <File>
+              <FileName>CanTransmitReceive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\CanTransmitReceive.c</FilePath>
+            </File>
+            <File>
+              <FileName>can.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\driverlib\can.c</FilePath>
+            </File>
+            <File>
+              <FileName>gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\driverlib\gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>interrupt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\driverlib\interrupt.c</FilePath>
+            </File>
+            <File>
+              <FileName>sysctl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\driverlib\sysctl.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\driverlib\uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>uartstdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\utils\uartstdio.c</FilePath>
+            </File>
+            <File>
+              <FileName>cpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\driverlib\cpu.c</FilePath>
             </File>
           </Files>
         </Group>

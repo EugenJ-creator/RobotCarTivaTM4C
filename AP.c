@@ -55,7 +55,7 @@
 #include "../inc/UART1.h"
 #include "../inc/AP.h"
 #include "../inc/tm4c123gh6pm.h"
-#include "GPIO.h"
+#include "GPIO_DIF.h"
 
 
 const uint32_t RECVSIZE=128;

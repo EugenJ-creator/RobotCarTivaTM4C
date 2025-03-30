@@ -4,6 +4,6 @@
 .\objects\dcmotor.o: ServoTD8120MG.h
 .\objects\dcmotor.o: PWM.h
 .\objects\dcmotor.o: ../inc/tm4c123gh6pm.h
-.\objects\dcmotor.o: GPIO.h
+.\objects\dcmotor.o: GPIO_DIF.h
 .\objects\dcmotor.o: DCMotor.h
 .\objects\dcmotor.o: ../inc/BSP.h
